@@ -9,7 +9,7 @@ execSql(createStockPrice)
 
 
 
-symbol = "SNOW"
+symbol = "TSLA"
 
 df = fetch_data(symbol)
 
