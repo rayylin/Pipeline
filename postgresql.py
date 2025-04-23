@@ -1,5 +1,8 @@
 import psycopg2
 
+from pipeline import fetch_data
+
+
 # Database connection parameters
 conn = psycopg2.connect(
     host="localhost",
@@ -34,3 +37,7 @@ for row in rows:
 conn.commit()
 cur.close()
 conn.close()
+
+
+
+df = fetch_data()
