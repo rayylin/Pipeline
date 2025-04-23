@@ -37,9 +37,18 @@ print(rows)
 
 for idx, row in df.tail().iterrows():
     
-    query = f"INSERT INTO stockPrice values ('{symbol}','{idx.to_pydatetime()}','{row['open']}','{row['high']}','{row['low']}','{row['close']}','{row['volume']}')"
+    query = f"""INSERT INTO stockPrice values ('{symbol}','{idx.to_pydatetime()}','{row['open']}','{row['high']}','{row['low']}','{row['close']}','{row['volume']}')
+                ON CONFLICT (stock_id, date) 
+                DO UPDATE SET
+                    open = EXCLUDED.open,
+                    high = EXCLUDED.high,
+                    low = EXCLUDED.low,
+                    close = EXCLUDED.close,
+                    volume = EXCLUDED.volume;
+    
+    """
     print(query)
 
-    # execSql(query)
+    execSql(query)
 
     # print(f"Date: {idx.date()}, Time: {idx.time()}, Open: {row['open']}")
