@@ -1,5 +1,4 @@
-CreateCashflow = """
-        CREATE TABLE IF NOT EXISTS cashflow  (
+CreateCashflow = """        CREATE TABLE IF NOT EXISTS cashflow  (
             stock_id TEXT,
             date DATE,
             "Free_Cash_Flow" NUMERIC,
