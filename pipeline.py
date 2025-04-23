@@ -9,16 +9,18 @@ def fetch_data(symbol='SNOW', **kwargs):
     df.index = pd.to_datetime(df.index)
     df.columns = ['open', 'high', 'low', 'close', 'volume']
     df = df.astype(float)
+    df['moving_avg'] = df['close'].rolling(window=5).mean()
     # Store result in XCom
-    #kwargs['ti'].xcom_push(key='fetched_df', value=df.to_json())
+    # kwargs['ti'].xcom_push(key='fetched_df', value=df.to_json())
     return df
     
-def transform_data(**kwargs):
-    df_json = kwargs['ti'].xcom_pull(key='fetched_df')
-    df = pd.read_json(df_json)
+def transform_data(df):
     df = df.sort_index()
     df['moving_avg'] = df['close'].rolling(window=5).mean()
     df['anomaly'] = abs(df['close'] - df['moving_avg']) > 2 * df['close'].std()
     print(df.tail())  # For testing/logging purpose
 
-print(fetch_data())
+df = fetch_data()
+print(df)
+print("---------------------")
+print(transform_data(df))
