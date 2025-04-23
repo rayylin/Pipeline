@@ -20,7 +20,7 @@ def transform_data(df):
     df['anomaly'] = abs(df['close'] - df['moving_avg']) > 2 * df['close'].std()
     print(df.tail())  # For testing/logging purpose
 
-df = fetch_data()
-print(df)
-print("---------------------")
-print(transform_data(df))
+# df = fetch_data()
+# print(df)
+# print("---------------------")
+# print(transform_data(df))

@@ -1,5 +1,5 @@
 import psycopg2
-
+from sqlCommand import CreateCashflow
 
 
 
@@ -7,8 +7,7 @@ import psycopg2
 
 # from pipeline import fetch_data
 
-def execSql(query):
-    pass
+def execSql(query=""):
 
     # Database connection parameters
     conn = psycopg2.connect(
@@ -22,18 +21,8 @@ def execSql(query):
 
 
     # Create table
-    cur.execute()
+    cur.execute(query)
 
-    # Insert sample data
-    # cur.execute("INSERT INTO people (name) VALUES (%s), (%s)", ("Alice", "Bob"))
-
-    # Query data
-    cur.execute("SELECT * FROM cashflow")
-    rows = cur.fetchall()
-
-    print("Data in 'people' table:")
-    for row in rows:
-        print(row)
 
     # Cleanup
     conn.commit()
@@ -41,4 +30,11 @@ def execSql(query):
     conn.close()
 
 
+# # Query data
+# cur.execute("SELECT * FROM people")
+# rows = cur.fetchall()
+
+# print("Data in 'people' table:")
+# for row in rows:
+#     print(row)
 

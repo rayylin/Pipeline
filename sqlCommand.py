@@ -58,3 +58,16 @@ CreateCashflow = """        CREATE TABLE IF NOT EXISTS cashflow  (
 
         );
     """
+
+
+createStockPrice = """        CREATE TABLE IF NOT EXISTS stockPrice  (
+            stock_id TEXT,
+            date DATE,
+            "open" NUMERIC,
+            "high" NUMERIC,
+            "low" NUMERIC,
+            "close" NUMERIC,
+            "volume" NUMERIC,
+            PRIMARY KEY (stock_id, date) 
+        );
+    """
