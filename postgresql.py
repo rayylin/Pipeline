@@ -12,10 +12,10 @@ def execSql(query=""):
     # Database connection parameters
     conn = psycopg2.connect(
         host="localhost",
-        port=5432,
-        dbname="mydb",
-        user="ray",
-        password="abc"
+        # port=5432,
+        dbname="pipeline",
+        user="chenruijia",
+        password="rebecca"
     )
     cur = conn.cursor()
 
@@ -34,10 +34,10 @@ def execSelect(query=""):
     # Database connection parameters
     conn = psycopg2.connect(
         host="localhost",
-        port=5432,
-        dbname="mydb",
-        user="ray",
-        password="abc"
+        # port=5432,
+        dbname="pipeline",
+        user="chenruijia",
+        password="rebecca"
     )
     cur = conn.cursor()
 
