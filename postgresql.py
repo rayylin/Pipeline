@@ -29,6 +29,29 @@ def execSql(query=""):
     cur.close()
     conn.close()
 
+def execSelect(query=""):
+
+    # Database connection parameters
+    conn = psycopg2.connect(
+        host="localhost",
+        port=5432,
+        dbname="mydb",
+        user="ray",
+        password="abc"
+    )
+    cur = conn.cursor()
+
+
+    cur.execute("SELECT * FROM stockPrice")
+    rows = cur.fetchall()
+
+    # Cleanup
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return rows
+
 
 # # Query data
 # cur.execute("SELECT * FROM people")

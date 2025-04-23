@@ -62,7 +62,7 @@ CreateCashflow = """        CREATE TABLE IF NOT EXISTS cashflow  (
 
 createStockPrice = """        CREATE TABLE IF NOT EXISTS stockPrice  (
             stock_id TEXT,
-            date DATE,
+            date timestamp,
             "open" NUMERIC,
             "high" NUMERIC,
             "low" NUMERIC,
