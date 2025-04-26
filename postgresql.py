@@ -3,7 +3,7 @@ from sqlCommand import CreateCashflow
 
 from config import get_connection
 
-conn = get_connection("ray")
+conn = get_connection()
 
 
 
@@ -12,7 +12,7 @@ conn = get_connection("ray")
 def execSql(query=""):
 
     # Database connection parameters
-    conn = get_connection("ray")
+    conn = get_connection()
     cur = conn.cursor()
 
 
@@ -28,7 +28,7 @@ def execSql(query=""):
 def execSelect(query=""):
 
     # Database connection parameters
-    conn = get_connection("ray")
+    conn = get_connection()
     cur = conn.cursor()
 
 
