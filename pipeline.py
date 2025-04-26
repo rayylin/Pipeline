@@ -4,6 +4,8 @@ from alphavantage import fetch_data
 import pandas as pd
 from io import StringIO
 
+
+
 execSql(CreateCashflow)
 execSql(createStockPrice)
 

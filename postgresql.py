@@ -1,7 +1,9 @@
 import psycopg2
 from sqlCommand import CreateCashflow
 
+from config import get_connection
 
+conn = get_connection()
 
 
 
@@ -10,13 +12,7 @@ from sqlCommand import CreateCashflow
 def execSql(query=""):
 
     # Database connection parameters
-    conn = psycopg2.connect(
-        host="localhost",
-        # port=5432,
-        dbname="pipeline",
-        user="chenruijia",
-        password="rebecca"
-    )
+    conn = get_connection("ray")
     cur = conn.cursor()
 
 
@@ -32,13 +28,7 @@ def execSql(query=""):
 def execSelect(query=""):
 
     # Database connection parameters
-    conn = psycopg2.connect(
-        host="localhost",
-        # port=5432,
-        dbname="pipeline",
-        user="chenruijia",
-        password="rebecca"
-    )
+    conn = get_connection("ray")
     cur = conn.cursor()
 
 
