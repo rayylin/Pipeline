@@ -3,7 +3,7 @@ from sqlCommand import CreateCashflow
 
 from config import get_connection
 
-conn = get_connection()
+conn = get_connection("ray")
 
 
 
