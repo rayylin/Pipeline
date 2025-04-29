@@ -6,7 +6,7 @@ rate = fred.get_series('FEDFUNDS')
 print(rate.tail())
 
 l = [# Interest Rates
-     'FEDFUNDS' # Federal Funds Rate
+     'FEDFUNDS' # Federal Funds Rate   -- Daily, lag one day
      ,"MORTGAGE30US" # Mortgage rates
      ,"GS10"    # 10-Year Treasury
 
