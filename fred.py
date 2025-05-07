@@ -31,6 +31,6 @@ l = [# Interest Rates
 for i in l:
     rate = fred.get_series(i)
     print(rate.tail())
-    print(rate.shape[0])
+    print(rate.shape[0]) # how many rows
 
 
