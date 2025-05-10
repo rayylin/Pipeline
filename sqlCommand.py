@@ -71,3 +71,39 @@ createStockPrice = """        CREATE TABLE IF NOT EXISTS stockPrice  (
             PRIMARY KEY (stock_id, date) 
         );
     """
+
+
+createStockPrice = """        CREATE TABLE IF NOT EXISTS stockPrice  (
+            stock_id TEXT,
+            date timestamp,
+            "open" NUMERIC,
+            "high" NUMERIC,
+            "low" NUMERIC,
+            "close" NUMERIC,
+            "volume" NUMERIC,
+            PRIMARY KEY (stock_id, date) 
+        );
+    """
+createMacro = """ CREATE TABLE IF NOT EXISTS MacroMonthly  (
+                    'FEDFUNDS'      NUMERIC(10, 4)     -- Federal Funds Rate   -- Daily, lag one day
+                    ,"MORTGAGE30US" NUMERIC(10, 4) -- Mortgage rates
+                    ,"GS10"         NUMERIC(10, 4) -- 10-Year Treasury
+
+                    -- Inflation & Prices
+                    ,"CPIAUCSL"     NUMERIC(10, 4) -- CPI (Consumer Price Index)
+                    ,"PCE"          NUMERIC(10, 4) -- PCE
+                    ,"PPIACO"       NUMERIC(10, 4) -- Producer Price Index
+
+                    -- Employment & Labor
+                    ,"UNRATE"       NUMERIC(10, 4) -- Unemployment rate
+                    ,"PAYEMS"       NUMERIC(10, 4) -- Nonfarm Payrolls
+
+                    -- GDP & Growth	
+                    , "GDP"         NUMERIC(10, 4) -- Real GDP
+                    , "GDPC1"       NUMERIC(10, 4) -- Real Gross Domestic Product
+
+                    -- Housing 
+                    ,"HOUST"        NUMERIC(10, 4) -- New Housing Starts
+                    ,"CSUSHPISA"    NUMERIC(10, 4) -- Home Price Index
+                )
+            """
