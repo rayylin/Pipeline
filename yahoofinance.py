@@ -3,7 +3,7 @@ import time
 
 for i in range(3):
     try:
-        # Choose the stock ticker (e.g., Apple)
+        
         ticker = 'TSLA'
         stock = yf.Ticker(ticker)
 
