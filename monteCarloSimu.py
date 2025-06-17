@@ -22,8 +22,8 @@ for t in range(1, N + 1):
 # Plot
 plt.figure(figsize=(10, 5))
 plt.plot(paths)
-plt.title("Monte Carlo Simulation of Stock Price Paths")
+plt.title("Monte Carlo Simulation of Stock Price Paths ")
 plt.xlabel("Time Steps (Days)")
-plt.ylabel("Stock Price")
+plt.ylabel("Stock Price:")
 plt.grid(True)
 plt.show()
