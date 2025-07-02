@@ -15,6 +15,7 @@ print(df.head())
 
 
 # Subset to smartphone users only
+# if we want to compare 3+ pages, we need to use chi-square
 ab_df = df[(df['Channel'] == 'smartphone') & 
            (df['LandingPage'].isin(['Mobile_1', 'Mobile_2']))]
 
