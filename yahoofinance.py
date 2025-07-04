@@ -4,7 +4,7 @@ import time
 for i in range(3):
     try:
         
-        ticker = 'TSLA'
+        ticker = 'MSFT'
         stock = yf.Ticker(ticker)
 
 
