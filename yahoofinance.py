@@ -21,7 +21,7 @@ for i in range(3):
         print("Summary:", info.get("calendar"))
     except:
         print("Rate Limit")
-        time.sleep(4)
+        time.sleep(6)
 
 
 # Fetch the cash flow statement
