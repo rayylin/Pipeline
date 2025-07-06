@@ -39,7 +39,24 @@ for i in headlines:
     print(i)
 
 
+def get_stock_price(stock_code="sh600000"):
+    url = f"http://hq.sinajs.cn/list={stock_code}"  # sh for Shanghai, sz for Shenzhen
+    headers = {
+        'Referer': 'https://finance.sina.com.cn/',
+        'User-Agent': 'Mozilla/5.0'
+    }
+    response = requests.get(url, headers=headers)
+    data = response.text
 
+    # Example response: var hq_str_sh600000="浦发银行,10.350,10.340,10.420,..."
+    if '=' in data:
+        info = data.split('"')[1].split(',')
+        name = info[0]
+        price = info[3]  # current price
+        print(f"{stock_code}: {name} - {price} RMB")
+
+get_stock_price("sh600000")  # SPDB
+get_stock_price("sz000001")  # Ping An Bank
 
 # # Example: find main headlines in <a> tags inside <div class="blk_hd">
 # headlines = soup.select('title') 
