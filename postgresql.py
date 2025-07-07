@@ -3,17 +3,17 @@ from sqlCommand import CreateCashflow
 
 from config import get_connection
 
-conn = get_connection()
+conn = get_connection() # for postgre sql
 
 
 
 # from pipeline import fetch_data
 
-def execSql(query=""):
+def execSql(query="", connection = conn):
 
     # Database connection parameters
-    conn = get_connection()
-    cur = conn.cursor()
+    connection = get_connection()
+    cur = connection.cursor()
 
 
     # Create table
@@ -21,24 +21,24 @@ def execSql(query=""):
 
 
     # Cleanup
-    conn.commit()
+    connection.commit()
     cur.close()
-    conn.close()
+    connection.close()
 
-def execSelect(query=""):
+def execSelect(query="", connection = conn):
 
     # Database connection parameters
-    conn = get_connection()
-    cur = conn.cursor()
+    connection = get_connection()
+    cur = connection.cursor()
 
 
-    cur.execute("SELECT * FROM stockPrice")
+    cur.execute("[stock].[dbo].[StockPrice]")
     rows = cur.fetchall()
 
     # Cleanup
-    conn.commit()
+    connection.commit()
     cur.close()
-    conn.close()
+    connection.close()
 
     return rows
 
