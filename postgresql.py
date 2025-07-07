@@ -1,7 +1,7 @@
 import psycopg2
 from sqlCommand import CreateCashflow
-
-from config import get_connection, connSqlServer
+import pyodbc
+from config import get_connection, connSqlServer, connSqlServerStr
 
 import datetime
 from decimal import Decimal
@@ -10,7 +10,7 @@ from decimal import Decimal
 
 # from pipeline import fetch_data
 
-def execSql(query="", type = "SqlServer"):
+def execSql(query="", values = (), type = "SqlServer"):
 
     if type == "PostgreSql":
         # Database connection parameters
@@ -28,23 +28,18 @@ def execSql(query="", type = "SqlServer"):
         connection.close()
     else:
 
-        conn = connSqlServer
+        conn = pyodbc.connect(connSqlServerStr)
         cursor = conn.cursor()
 
-        # Execute SQL query
-        query = "SELECT * FROM table1"
-        cursor.execute(query)
-
-        # Fetch all results
-        rows = cursor.fetchall()
-
-        # Print results
-        for row in rows:
-            print(row)
-
-        # Close connection
-        cursor.close()
-        conn.close()
+        try:
+            cursor.execute(query, values)
+            conn.commit()
+            print("Row inserted successfully.")
+        except pyodbc.Error as e:
+            print("Error:", e)
+        finally:
+            cursor.close()
+            conn.close()
 
 
 def execSelect(query="select * from [stock].[dbo].[StockPriceDaily]", type = "SqlServer"):
