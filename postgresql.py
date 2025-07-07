@@ -3,9 +3,10 @@ from sqlCommand import CreateCashflow
 
 from config import get_connection, connSqlServer
 
+import datetime
+from decimal import Decimal
+
 #conn = get_connection() # for postgre sql
-
-
 
 # from pipeline import fetch_data
 
@@ -68,7 +69,6 @@ def execSelect(query="select * from [stock].[dbo].[StockPriceDaily]", type = "Sq
         cursor = conn.cursor()
 
         # Execute SQL query
-        query = "SELECT * FROM [stock].[dbo].[StockPriceDaily]"
         cursor.execute(query)
 
         # Fetch all results
@@ -82,7 +82,20 @@ def execSelect(query="select * from [stock].[dbo].[StockPriceDaily]", type = "Sq
         cursor.close()
         conn.close()
 
-        return rows
+        result = []
+
+        for row in rows:
+            converted = []
+            for item in row:
+                if isinstance(item, datetime.datetime):
+                    converted.append(item.strftime("%Y-%m-%d"))  # or item.isoformat()
+                elif isinstance(item, Decimal):
+                    converted.append(float(item))  # or str(item) if you prefer string
+                else:
+                    converted.append(item)  # int, str, etc.
+            result.append(converted)
+
+        return result
 
 
 # # Query data
