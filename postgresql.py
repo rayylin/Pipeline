@@ -1,46 +1,88 @@
 import psycopg2
 from sqlCommand import CreateCashflow
 
-from config import get_connection
+from config import get_connection, connSqlServer
 
-conn = get_connection() # for postgre sql
+#conn = get_connection() # for postgre sql
 
 
 
 # from pipeline import fetch_data
 
-def execSql(query="", connection = conn):
+def execSql(query="", type = "SqlServer"):
 
-    # Database connection parameters
-    connection = get_connection()
-    cur = connection.cursor()
-
-
-    # Create table
-    cur.execute(query)
+    if type == "PostgreSql":
+        # Database connection parameters
+        connection = get_connection()
+        cur = connection.cursor()
 
 
-    # Cleanup
-    connection.commit()
-    cur.close()
-    connection.close()
-
-def execSelect(query="", connection = conn):
-
-    # Database connection parameters
-    connection = get_connection()
-    cur = connection.cursor()
+        # Create table
+        cur.execute(query)
 
 
-    cur.execute("[stock].[dbo].[StockPrice]")
-    rows = cur.fetchall()
+        # Cleanup
+        connection.commit()
+        cur.close()
+        connection.close()
+    else:
 
-    # Cleanup
-    connection.commit()
-    cur.close()
-    connection.close()
+        conn = connSqlServer
+        cursor = conn.cursor()
 
-    return rows
+        # Execute SQL query
+        query = "SELECT * FROM table1"
+        cursor.execute(query)
+
+        # Fetch all results
+        rows = cursor.fetchall()
+
+        # Print results
+        for row in rows:
+            print(row)
+
+        # Close connection
+        cursor.close()
+        conn.close()
+
+
+def execSelect(query="select * from [stock].[dbo].[StockPriceDaily]", type = "SqlServer"):
+    if type == "PostgreSql":
+        # Database connection parameters
+        connection = get_connection()
+        cur = connection.cursor()
+
+
+        cur.execute(query)
+        rows = cur.fetchall()
+
+        # Cleanup
+        connection.commit()
+        cur.close()
+        connection.close()
+
+        return rows
+    else:
+
+        conn = connSqlServer
+        cursor = conn.cursor()
+
+        # Execute SQL query
+        query = "SELECT * FROM [stock].[dbo].[StockPriceDaily]"
+        cursor.execute(query)
+
+        # Fetch all results
+        rows = cursor.fetchall()
+
+        # Print results
+        # for row in rows:
+        #     print(row)
+
+        # Close connection
+        cursor.close()
+        conn.close()
+
+        return rows
 
 
 # # Query data
