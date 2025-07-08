@@ -27,7 +27,7 @@ for tag in a_tags:
 
 
 
-for i in range(5):
+for i in range(len(urls)):
     response = requests.get(urls[i], headers=headers)
     soup = BeautifulSoup(response.text, 'lxml')
 

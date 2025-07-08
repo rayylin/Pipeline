@@ -60,7 +60,7 @@ def execSelect(query="select * from [stock].[dbo].[StockPriceDaily]", type = "Sq
         return rows
     else:
 
-        conn = connSqlServer
+        conn = pyodbc.connect(connSqlServerStr)
         cursor = conn.cursor()
 
         # Execute SQL query

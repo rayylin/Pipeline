@@ -21,9 +21,7 @@ for idx, row in df.head().iterrows():
         str(Decimal(row['close'])),        
         str(Decimal(row['adjClose'])),        
         int(row['volume'].replace(",",""))                
-    )
-
-    
+    )    
     
     print(query)
 
