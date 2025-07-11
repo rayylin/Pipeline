@@ -4,7 +4,7 @@ from config import connSqlServer
 from decimal import Decimal
 from datetime import datetime
 
-df = pd.read_csv(r'C:\\Users\\dwade\\Downloads\\aapl.csv')
+df = pd.read_csv(r'C:\\Users\\dwade\\Downloads\\tsla.csv')
 
 print(df.head())
 
