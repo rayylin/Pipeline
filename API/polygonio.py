@@ -34,7 +34,8 @@ from polygon.rest.models import (
     TickerNews,
 )
 
-client = RESTClient("b5UCMzdBDke3aeFqLkfakPjG2xQbJcoW")
+
+client = RESTClient(polygonapi)
 
 ticker = "AAPL"
 
@@ -62,4 +63,6 @@ print(quote)
 quotes = client.list_quotes(ticker=ticker, timestamp="2022-01-04")
 for quote in quotes:
     print(quote)
+
+
 
