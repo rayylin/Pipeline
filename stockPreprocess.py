@@ -4,28 +4,31 @@ from config import connSqlServer
 from decimal import Decimal
 from datetime import datetime
 
-df = pd.read_csv(r'C:\\Users\\dwade\\Downloads\\tsla.csv')
+df = pd.read_csv(r'C:\\Users\\dwade\\Downloads\\aapl.csv')
 
 print(df.head())
 
 
-for idx, row in df.head().iterrows():
+for idx, row in df.iterrows():
     
     query = f"""INSERT INTO [stock].[dbo].[StockPriceDaily] values (?,?, ?, ?, ?, ?, ?, ?)"""
     
-    values = ("'AAPL'", 
-        row['Date'],    
-        str(Decimal(row['open'])),        
-        str(Decimal(row['high'])),        
-        str(Decimal(row['low'])),        
-        str(Decimal(row['close'])),        
-        str(Decimal(row['adjClose'])),        
-        int(row['volume'].replace(",",""))                
-    )    
-    
-    print(query)
+    try:
+        values = ("AAPL", 
+            row['Date'],    
+            str(Decimal(row['open'])),        
+            str(Decimal(row['high'])),        
+            str(Decimal(row['low'])),        
+            str(Decimal(row['close'])),        
+            str(Decimal(row['adjClose'])),        
+            int(row['volume'].replace(",",""))                
+        )    
+        
+        print(query)
 
-    execSql(query, values, "SqlServer")
+        execSql(query, values, "SqlServer")
+    except:
+        pass # for those divident
 
 
 print(execSelect("""SELECT *
