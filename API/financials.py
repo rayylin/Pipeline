@@ -1,6 +1,7 @@
 from polygon import RESTClient
+from config import polygonapi  # or use os.getenv() if using .env
 
-client = RESTClient("b5UCMzdBDke3aeFqLkfakPjG2xQbJcoW")
+client = RESTClient(polygonapi)
 
 request = client.get_daily_open_close_agg(
     "AAPL",
