@@ -3,10 +3,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import polygonapi
-
-
 import requests
-from config import polygonapi  # or use os.getenv() if using .env
 
 from polygon import RESTClient
 import datetime
