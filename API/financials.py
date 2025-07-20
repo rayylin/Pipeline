@@ -24,3 +24,7 @@ print(financials[0].company_name)
 sf = financials[0]
 for attr, value in sf.__dict__.items():
     print(f"{attr}: {value}")
+
+print( sf.financials.balance_sheet)
+
+
