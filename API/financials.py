@@ -18,13 +18,16 @@ try:
 except:
     pass
 
-print(len(financials))
-print(financials[0].company_name)
+try:
+    
+    print(len(financials))
+    print(financials[0].company_name)
 
-sf = financials[0]
-for attr, value in sf.__dict__.items():
-    print(f"{attr}: {value}")
+    sf = financials[0]
+    for attr, value in sf.__dict__.items():
+        print(f"{attr}: {value}")
 
-print( sf.financials.balance_sheet)
-
-
+    print( sf.financials.balance_sheet)
+    
+except:
+    pass
