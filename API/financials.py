@@ -27,7 +27,8 @@ try:
     for attr, value in sf.__dict__.items():
         print(f"{attr}: {value}")
 
-    print( sf.financials.balance_sheet)
-    
+    for attr, value in sf.financials.balance_sheet.__dict__.items():
+        print(f"{attr}: {value}")
+
 except:
     pass
