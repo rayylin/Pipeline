@@ -13,3 +13,8 @@ xml_str = response.text
 root = ET.fromstring(xml_str)
 company_name = root.find('.//Company_Name').text
 print(f"Company Name: {company_name}")
+
+
+for row in root.findall('row'):
+    for child in row:
+        print(f"{child.tag}: {child.text}")
