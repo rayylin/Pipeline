@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = r"https://find-and-update.company-information.service.gov.uk/company/02723534/officers"#https://find-and-update.company-information.service.gov.uk/company/02723534"#https://top.qcc.com/"#https://finance.sina.com.cn/"
+url = r"https://www.qcckyc.com/enterprise-details?token=QCN165MD7X-1753325823171-1b1e899bc34bdb51bb3c04e0f73ae148"#https://find-and-update.company-information.service.gov.uk/company/02723534"#https://top.qcc.com/"#https://finance.sina.com.cn/"
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.0.0 Safari/537.36'
 }

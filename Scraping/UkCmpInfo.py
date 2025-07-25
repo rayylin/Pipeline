@@ -5,7 +5,7 @@ from requests.auth import HTTPBasicAuth
 api_key = 'YOUR_API_KEY'
 company_number = '02723534'
 
-url = f'https://api.company-information.service.gov.uk/company/{company_number}'
+url = f'https://www.qcckyc.com/enterprise-details?token=QCN165MD7X-1753325823171-1b1e899bc34bdb51bb3c04e0f73ae148' #https://api.company-information.service.gov.uk/company/{company_number}'
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.0.0 Safari/537.36'
 }
