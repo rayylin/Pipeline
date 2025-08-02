@@ -6,7 +6,6 @@ def generate_drawio_xml(tables):
     mxGraphModel = ET.SubElement(diagram_doc, 'mxGraphModel')
     root = ET.SubElement(mxGraphModel, 'root')
 
-    # Root and layer
     ET.SubElement(root, 'mxCell', {'id': '0'})
     ET.SubElement(root, 'mxCell', {'id': '1', 'parent': '0'})
 
@@ -21,12 +20,11 @@ def generate_drawio_xml(tables):
         id_counter += 1
         total_height = start_size + row_height * len(cols)
 
-        # Swimlane with header (table name)
-        swimlane_style = f"shape=swimlane;startSize={start_size};swimlaneLine=1;"
+        # Create the main swimlane box
         swimlane = ET.Element('mxCell', {
             'id': table_id,
             'value': table,
-            'style': swimlane_style,
+            'style': f"shape=swimlane;startSize={start_size};swimlaneLine=1;",
             'vertex': "1",
             'parent': "1"
         })
@@ -39,26 +37,27 @@ def generate_drawio_xml(tables):
         })
         root.append(swimlane)
 
-        # Body cell (columns), starting at Y = start_size
-        content_id = str(id_counter)
-        id_counter += 1
-        body = ET.Element('mxCell', {
-            'id': content_id,
-            'value': "<br>".join(cols),
-            'style': "text;html=1;align=left;verticalAlign=top;spacingLeft=4;",
-            'vertex': "1",
-            'parent': table_id
-        })
-        ET.SubElement(body, 'mxGeometry', {
-            'x': "0",
-            'y': str(start_size),  # Push down to below the header
-            'width': str(width),
-            'height': str(row_height * len(cols)),
-            'as': 'geometry'
-        })
-        root.append(body)
+        # Add each column as a separate cell inside the swimlane
+        for i, col in enumerate(cols):
+            cell_id = str(id_counter)
+            id_counter += 1
+            col_cell = ET.Element('mxCell', {
+                'id': cell_id,
+                'value': col,
+                'style': "text;html=1;align=left;verticalAlign=middle;spacingLeft=4;",
+                'vertex': "1",
+                'parent': table_id
+            })
+            ET.SubElement(col_cell, 'mxGeometry', {
+                'x': "0",
+                'y': str(start_size + i * row_height),
+                'width': str(width),
+                'height': str(row_height),
+                'as': 'geometry'
+            })
+            root.append(col_cell)
 
-        x += 220  # Next shape position
+        x += 220
 
     return ET.tostring(diagram, encoding='utf-8', method='xml')
 
@@ -69,5 +68,5 @@ tables = {
 }
 
 
-with open("er_diagram3.drawio", "wb") as f:
+with open("er_diagram4.drawio", "wb") as f:
     f.write(generate_drawio_xml(tables))
