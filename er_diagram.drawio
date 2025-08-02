@@ -1,1 +1,19 @@
-<mxfile><diagram name="ERD"><mxGraphModel><root><mxCell id="0" /><mxCell id="1" parent="0" /><mxCell id="2" value="&lt;b&gt;Users&lt;/b&gt;&lt;br&gt;id&lt;br&gt;username&lt;br&gt;email" style="shape=swimlane;startSize=20;" vertex="1" parent="1"><mxGeometry x="40" y="40" width="160" height="90" as="geometry" /></mxCell><mxCell id="3" value="&lt;b&gt;Orders&lt;/b&gt;&lt;br&gt;order_id&lt;br&gt;user_id&lt;br&gt;amount&lt;br&gt;date" style="shape=swimlane;startSize=20;" vertex="1" parent="1"><mxGeometry x="240" y="40" width="160" height="110" as="geometry" /></mxCell><mxCell id="4" value="&lt;b&gt;Products&lt;/b&gt;&lt;br&gt;product_id&lt;br&gt;name&lt;br&gt;price" style="shape=swimlane;startSize=20;" vertex="1" parent="1"><mxGeometry x="440" y="40" width="160" height="90" as="geometry" /></mxCell></root></mxGraphModel></diagram></mxfile>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="28.0.7">
+  <diagram name="ERD" id="0">
+    <mxGraphModel dx="1426" dy="743" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="&lt;b&gt;Users&lt;/b&gt;&lt;br&gt;id&lt;br&gt;username&lt;br&gt;email" style="shape=swimlane;startSize=20;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="&lt;b&gt;Orders&lt;/b&gt;&lt;br&gt;order_id&lt;br&gt;user_id&lt;br&gt;amount&lt;br&gt;date" style="shape=swimlane;startSize=20;" parent="1" vertex="1">
+          <mxGeometry x="265" y="200" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="&lt;b&gt;Products&lt;/b&gt;&lt;br&gt;product_id&lt;br&gt;name&lt;br&gt;price" style="shape=swimlane;startSize=20;" parent="1" vertex="1">
+          <mxGeometry x="550" y="90" width="160" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,25 +1,20 @@
 import xml.etree.ElementTree as ET
-import base64
-
-
-tables = {
-    "Users": ["id", "username", "email"],
-    "Orders": ["order_id", "user_id", "amount", "date"],
-    "Products": ["product_id", "name", "price"]
-}
 
 
 
-def create_cell(id, value, x, y, width=120, height=20, style=None, parent="1"):
+
+
+
+def create_cell(id, value, x, y, width=160, height=100, style=None, parent="1"):
     attrib = {
         'id': str(id),
         'value': value,
-        'style': style or "shape=swimlane;startSize=20;",
+        'style': style or "shape=swimlane;startSize=30;",
         'vertex': "1",
         'parent': parent
     }
     cell = ET.Element('mxCell', attrib)
-    geometry = ET.SubElement(cell, 'mxGeometry', {
+    ET.SubElement(cell, 'mxGeometry', {
         'x': str(x),
         'y': str(y),
         'width': str(width),
@@ -34,6 +29,7 @@ def generate_drawio_xml(tables):
     mxGraphModel = ET.SubElement(diagram_doc, 'mxGraphModel')
     root = ET.SubElement(mxGraphModel, 'root')
 
+    # Root and layer
     ET.SubElement(root, 'mxCell', {'id': '0'})
     ET.SubElement(root, 'mxCell', {'id': '1', 'parent': '0'})
 
@@ -41,17 +37,57 @@ def generate_drawio_xml(tables):
     id_counter = 2
 
     for table, cols in tables.items():
-        # Header cell
-        height = 30 + 20 * len(cols)
-        label = f"<b>{table}</b><br>" + "<br>".join(cols)
-        cell = create_cell(id_counter, label, x, y, 160, height)
-        root.append(cell)
+        table_id = str(id_counter)
         id_counter += 1
-        x += 200  # move x for next shape
 
-    xml_str = ET.tostring(diagram, encoding='utf-8')
+        # Main container with swimlane
+        swimlane_style = "shape=swimlane;startSize=30;swimlaneLine=1;"
+        swimlane = ET.Element('mxCell', {
+            'id': table_id,
+            'value': table,
+            'style': swimlane_style,
+            'vertex': "1",
+            'parent': "1"
+        })
+        ET.SubElement(swimlane, 'mxGeometry', {
+            'x': str(x),
+            'y': str(y),
+            'width': "160",
+            'height': str(30 + 20 * len(cols)),
+            'as': 'geometry'
+        })
+        root.append(swimlane)
+
+        # Body text inside the swimlane
+        content_id = str(id_counter)
+        id_counter += 1
+        body = ET.Element('mxCell', {
+            'id': content_id,
+            'value': "<br>".join(cols),
+            'style': "text;html=1;align=left;verticalAlign=top;spacingLeft=4;",
+            'vertex': "1",
+            'parent': table_id
+        })
+        ET.SubElement(body, 'mxGeometry', {
+            'x': "0",
+            'y': "0",
+            'width': "160",
+            'height': str(20 * len(cols)),
+            'as': 'geometry'
+        })
+        root.append(body)
+
+        x += 220  # next shape position
+
+    xml_str = ET.tostring(diagram, encoding='utf-8', method='xml')
     return xml_str
 
+tables = {
+    "Users": ["id", "username", "email"],
+    "Orders": ["order_id", "user_id", "amount", "date"],
+    "Products": ["product_id", "name", "price"]
+}
 
-with open("er_diagram.drawio", "wb") as f:
+
+with open("er_diagram1.drawio", "wb") as f:
     f.write(generate_drawio_xml(tables))
