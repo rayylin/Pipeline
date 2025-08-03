@@ -89,8 +89,10 @@ tableList = {"Users": ["id", "username", "email"],
     "Products": ["product_id", "name", "price"],
     "Orders11111": ["order_id", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date"]}
 
-tablesDic =  {f"{i} ({descDic[i]})" : tableList[i] for i in tables}
+tablesDic =  {f"{i} {"(" +descDic[i]+")" if descDic[i] != "" else ""} " : tableList[i] for i in tables}
 
 
-with open("er_diagram11.drawio", "wb") as f:
+
+
+with open("er_diagram12.drawio", "wb") as f:
     f.write(generate_drawio_xml(tablesDic))
