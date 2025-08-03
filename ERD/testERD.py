@@ -80,13 +80,17 @@ def generate_drawio_xml(tables):
 
     return ET.tostring(diagram, encoding='utf-8', method='xml')
 
-tables = {
-    "Users (DB1.dbo.user)": ["id", "username", "email"],
-    "Orders (DB2.sales.orders)": ["order_id", "user_id", "amount", "date"],
+tables = ["Users", "Orders", "Products", "Orders11111"]
+
+descDic = {"Users": "DB1.dbo.user", "Orders": "DB2.sales.orders", "Products":"", "Orders11111": "DB222.sales.orders"}
+
+tableList = {"Users": ["id", "username", "email"],
+    "Orders": ["order_id", "user_id", "amount", "date"],
     "Products": ["product_id", "name", "price"],
-    "Orders11111 (DB2.sales.orders)": ["order_id", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date"],
-}
+    "Orders11111": ["order_id", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date"]}
+
+tablesDic =  {f"{i} ({descDic[i]})" : tableList[i] for i in tables}
 
 
-with open("er_diagram9.drawio", "wb") as f:
-    f.write(generate_drawio_xml(tables))
+with open("er_diagram11.drawio", "wb") as f:
+    f.write(generate_drawio_xml(tablesDic))
