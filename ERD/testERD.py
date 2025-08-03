@@ -83,9 +83,10 @@ def generate_drawio_xml(tables):
 tables = {
     "Users (DB1.dbo.user)": ["id", "username", "email"],
     "Orders (DB2.sales.orders)": ["order_id", "user_id", "amount", "date"],
-    "Products": ["product_id", "name", "price"]
+    "Products": ["product_id", "name", "price"],
+    "Orders11111 (DB2.sales.orders)": ["order_id", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date", "user_id", "amount", "date"],
 }
 
 
-with open("er_diagram8.drawio", "wb") as f:
+with open("er_diagram9.drawio", "wb") as f:
     f.write(generate_drawio_xml(tables))
