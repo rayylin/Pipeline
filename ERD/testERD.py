@@ -91,8 +91,12 @@ tableList = {"Users": ["id", "username", "email"],
 
 tablesDic =  {f"{i} {"(" +descDic[i]+")" if descDic[i] != "" else ""} " : tableList[i] for i in tables}
 
+# format_desc = lambda s: f"({s})" if s else ""
+# tablesDic = {f"{i} {format_desc(descDic[i])}": tableList[i] for i in tables}
+
+#tablesDic = {f"{i} {(fmt := (lambda s: f'({s})' if s else ''))(descDic[i])}": tableList[i] for i in tables}
 
 
 
-with open("er_diagram12.drawio", "wb") as f:
+with open("er_diagram13.drawio", "wb") as f:
     f.write(generate_drawio_xml(tablesDic))
