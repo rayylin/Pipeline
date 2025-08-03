@@ -1,13 +1,8 @@
 import xml.etree.ElementTree as ET
+import html
 
 def estimate_width(text, min_width=160, char_width=7):
     return max(min_width, len(text) * char_width)
-
-def html_escape(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-def wrap_html(value):
-    return f"<![CDATA[<div>{value}</div>]]>"
 
 def generate_drawio_xml(tables):
     diagram = ET.Element('mxfile')
@@ -25,7 +20,7 @@ def generate_drawio_xml(tables):
     header_height = row_height * header_rows
 
     for raw_table, cols in tables.items():
-        # Parse table name and description
+        # Parse table name and optional description
         if "(" in raw_table:
             name = raw_table.split("(")[0].strip()
             desc = raw_table[raw_table.find("("):].strip()
@@ -33,11 +28,10 @@ def generate_drawio_xml(tables):
             name = raw_table
             desc = ""
 
-        # Format header using HTML
-        escaped_name = html_escape(name)
-        escaped_desc = html_escape(desc)
+        # Proper HTML escape
+        escaped_name = html.escape(name)
+        escaped_desc = html.escape(desc)
         full_header = f"<b>{escaped_name}</b>" + (f"<br><i>{escaped_desc}</i>" if desc else "")
-        header_value = wrap_html(full_header)
 
         table_id = str(id_counter)
         id_counter += 1
@@ -45,10 +39,10 @@ def generate_drawio_xml(tables):
         max_text = max([name, desc] + cols, key=len)
         width = estimate_width(max_text)
 
-        # Swimlane with HTML header
+        # Swimlane cell
         swimlane = ET.Element('mxCell', {
             'id': table_id,
-            'value': header_value,
+            'value': full_header,
             'style': f"shape=swimlane;startSize={header_height};swimlaneLine=1;html=1;whiteSpace=wrap;",
             'vertex': "1",
             'parent': "1"
@@ -62,13 +56,13 @@ def generate_drawio_xml(tables):
         })
         root.append(swimlane)
 
-        # Add individual column lines
+        # Add column cells
         for i, col in enumerate(cols):
             cell_id = str(id_counter)
             id_counter += 1
             col_cell = ET.Element('mxCell', {
                 'id': cell_id,
-                'value': html_escape(col),
+                'value': html.escape(col),
                 'style': "text;html=1;align=left;verticalAlign=middle;spacingLeft=4;",
                 'vertex': "1",
                 'parent': table_id
@@ -93,5 +87,5 @@ tables = {
 }
 
 
-with open("er_diagram7.drawio", "wb") as f:
+with open("er_diagram8.drawio", "wb") as f:
     f.write(generate_drawio_xml(tables))
