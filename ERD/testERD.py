@@ -64,9 +64,10 @@ def generate_drawio_xml(tables):
 tables = {
     "Users": ["id", "username", "email"],
     "Orders": ["order_id", "user_id", "amount", "date","order_id", "user_id", "amount", "date","order_id", "user_id", "amount", "date"],
-    "Products": ["product_id", "name", "price"]
+    "Products": ["product_id", "name", "price"],
+    "Products123": ["product_id", "name", "price"]
 }
 
 
-with open("er_diagram4.drawio", "wb") as f:
+with open("er_diagram5.drawio", "wb") as f:
     f.write(generate_drawio_xml(tables))
