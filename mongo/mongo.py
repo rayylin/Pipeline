@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from cmpInfo import getTwCmpInfo
+from cmpInfo import getCmpInfo
 
 # Connect to MongoDB (localhost:27017)
 client = MongoClient("mongodb://localhost:27017/")
@@ -8,13 +8,15 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client["sai"]
 collection = db["cmp_collection"]
 
+cmpName = "台灣積體電路製造股份有限公司"
+cmpSrc = "TW"
 
-dic = getTwCmpInfo("台灣積體電路製造股份有限公司")
+dic = getCmpInfo(cmpName, cmpSrc)
 
 insert_result = collection.insert_one(dic)
 
 # Find one document
-document = collection.find_one({"name": "Cecilia"})
+document = collection.find_one({"Company Name": "台灣積體電路製造股份有限公司"})
 print("Found document:", document)
 
 # # Update a document

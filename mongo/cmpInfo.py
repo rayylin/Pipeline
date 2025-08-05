@@ -2,6 +2,28 @@ import requests
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 
+from enum import Enum
+
+class Source(Enum):
+    TW = "TW"
+    CN = "CN"
+    UK = "UK"
+    HK = "HK"
+
+def getCmpInfo(Cmp:str ="台灣積體電路製造股份有限公司", src:str = "TW") -> dict[str, str]:
+    
+    if src == Source.TW:
+        return getTwCmpInfo(Cmp)
+    elif src == Source.CN:
+        pass
+    elif src == Source.UK:
+        pass
+    elif src == Source.HK:
+        pass
+    else:
+        raise ValueError(f"Unsupported source: {src}")
+    
+
 
 def getTwCmpInfo(Cmp:str) -> dict[str, str]:
 
