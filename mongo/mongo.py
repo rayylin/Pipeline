@@ -37,3 +37,38 @@ print("Updated document:", updated)
 # collection.delete_one({"Company_Name": cmpName})
 
 
+person = {
+    "name": "蔡明介",
+    "gender": "Male",
+    "education_level": "Master's",
+    "birth": "1950-06-15"
+}
+
+person_collection = db["person"]
+person_collection.insert_one(person)
+
+# use lookup to join two collections
+pipeline = [
+    {
+        "$lookup": {
+            "from": "person",                    # target collection
+            "localField": "Responsible_Name",    # field in company
+            "foreignField": "name",              # field in person
+            "as": "person_info"                  # result array field
+        }
+    },
+    {
+        "$unwind": "$person_info"  # optional: flatten the result
+    }
+]
+
+results = list(collection.aggregate(pipeline))
+
+for doc in results:
+    print(doc)
+
+
+
+
+
+
