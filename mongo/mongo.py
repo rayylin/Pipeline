@@ -19,9 +19,39 @@ cmpSrc = "TW"
 # Insert into mongo
 #insert_result = collection.insert_one(dic)
 
-# read from mongo
+# read all from mongo
+results = collection.find()
+
+for doc in results:
+    print(doc)
+
+# read a specific cmp
 document = collection.find_one({"Company_Name": cmpName})
 print("Found document:", document)
+
+# count with a filter
+count = collection.count_documents({"Company_Setup_Date": "0760221"})
+print(f"Companies: {count}")
+
+# sum up a field
+pipeline = [
+    {
+        "$addFields": {
+            "capital_num": { "$toLong": "$Capital_Stock_Amount" } # Cast string to number using $toLong
+        }
+    },
+    {
+        "$group": {
+            "_id": None,
+            "total_capital": { "$sum": "$capital_num" }
+        }
+    }
+]
+
+result = list(collection.aggregate(pipeline))
+print("Total capital stock:", result[0]["total_capital"])
+
+
 
 # Update a document
 collection.update_one({"Company_Name": cmpName}, {"$set": {"age": 32, "emp": 3222222}}) # if we want to update/add new item, just add another item in the dicionary
@@ -37,15 +67,16 @@ print("Updated document:", updated)
 # collection.delete_one({"Company_Name": cmpName})
 
 
-person = {
-    "name": "蔡明介",
-    "gender": "Male",
-    "education_level": "Master's",
-    "birth": "1950-06-15"
-}
+# Create another collection to perform look up
+# person = {
+#     "name": "蔡明介",
+#     "gender": "Male",
+#     "education_level": "Master's",
+#     "birth": "1950-06-15"
+# }
 
-person_collection = db["person"]
-person_collection.insert_one(person)
+# person_collection = db["person"]
+# person_collection.insert_one(person)
 
 # use lookup to join two collections
 pipeline = [
@@ -58,7 +89,7 @@ pipeline = [
         }
     },
     {
-        "$unwind": "$person_info"  # optional: flatten the result
+        "$unwind": "$person_info" 
     }
 ]
 
