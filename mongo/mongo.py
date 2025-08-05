@@ -8,27 +8,32 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client["sai"]
 collection = db["cmp_collection"]
 
-cmpName = "台灣積體電路製造股份有限公司"
+
+# Get Company information
+cmpName = "聯發科技股份有限公司"
 cmpSrc = "TW"
 
-dic = getCmpInfo(cmpName, cmpSrc)
+#dic = getCmpInfo(cmpName, cmpSrc)
 
-insert_result = collection.insert_one(dic)
 
-# Find one document
-document = collection.find_one({"Company Name": "台灣積體電路製造股份有限公司"})
+# Insert into mongo
+#insert_result = collection.insert_one(dic)
+
+# read from mongo
+document = collection.find_one({"Company_Name": cmpName})
 print("Found document:", document)
 
-# # Update a document
-# collection.update_one({"name": "Alice"}, {"$set": {"age": 31}})
+# Update a document
+collection.update_one({"Company_Name": cmpName}, {"$set": {"age": 32, "emp": 3222222}}) # if we want to update/add new item, just add another item in the dicionary
+# notice that there should be only one $set; otherwise the later one would overwrite the previouse one.
+collection.update_one({"Company_Name": cmpName}, {"$set": {"age": 32}, "$unset": {"emp": ""}}) # if want to delete a column, use unset
+print("----------------Updated------------------")
 
-# # Find updated document
-# updated = collection.find_one({"name": "Alice"})
-# print("Updated document:", updated)
+# Find updated document
+updated = collection.find_one({"Company_Name": cmpName})
+print("Updated document:", updated)
 
-# # Delete document
-# collection.delete_one({"name": "Alice"})
+# Delete document
+# collection.delete_one({"Company_Name": cmpName})
 
-# # Confirm deletion
-# deleted = collection.find_one({"name": "Alice"})
-# print("After deletion:", deleted)
+
