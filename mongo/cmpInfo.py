@@ -12,25 +12,6 @@ class Source(Enum):
     HK = "HK"
 
 
-def getCmpInfo(Cmp:str ="台灣積體電路製造股份有限公司", src:str = "TW") -> dict[str, str]:
-    try:
-        source_enum = Source(src)
-    except ValueError:
-        raise ValueError(f"Invalid source: {src}")
-
-    if source_enum == Source.TW:
-        return getTwCmpInfo(Cmp)
-    elif source_enum == Source.CN:
-        pass
-    elif source_enum == Source.UK:
-        pass
-    elif source_enum == Source.HK:
-        return getHkCmpInfo(Cmp)
-    else:
-        raise ValueError(f"Unsupported source: {src}")
-    
-
-
 def getTwCmpInfo(Cmp:str) -> dict[str, str]:
 
     url = f"https://data.gcis.nat.gov.tw/od/data/api/6BBA2268-1367-4B42-9CCA-BC17499EBE8C?$format=xml&$filter=Company_Name like {Cmp} and Company_Status eq 01&$skip=0&$top=50"#https://top.qcc.com/"#https://finance.sina.com.cn/"
@@ -51,28 +32,8 @@ def getTwCmpInfo(Cmp:str) -> dict[str, str]:
 
     return dic
 
-def getHkCmpInfo():
-    url = "https://data.cr.gov.hk/cr/api/api/v1/api_builder/json/local/search"
-
-    # Define the query parameters
-    params = {
-        "query[0][key1]": "Comp_name",
-        "query[0][key2]": "begins_with",
-        "query[0][key3]": "hsbc"
-    }
-
-    # Make the GET request
-    response = requests.get(url, params=params)
-
-    # Check if the request was successful
-    if response.status_code == 200:
-        data = response.json()
-        print(data)
-    else:
-        print(f"Error: {response.status_code}")
 
 def getHkCmpInfo(cmp_name: str) -> dict[str, str] | None:
-    
     url = "https://data.cr.gov.hk/cr/api/api/v1/api_builder/json/local/search"
 
     params = {
@@ -93,3 +54,42 @@ def getHkCmpInfo(cmp_name: str) -> dict[str, str] | None:
     else:
         print(f"Error: {response.status_code}")
         return None
+
+def getCmpInfo(Cmp:str ="台灣積體電路製造股份有限公司", src:str = "TW") -> dict[str, str]:
+    try:
+        source_enum = Source(src)
+    except ValueError:
+        raise ValueError(f"Invalid source: {src}")
+
+    if source_enum == Source.TW:
+        return getTwCmpInfo(Cmp)
+    elif source_enum == Source.CN:
+        pass
+    elif source_enum == Source.UK:
+        pass
+    elif source_enum == Source.HK:
+        return getHkCmpInfo(Cmp)
+    else:
+        raise ValueError(f"Unsupported source: {src}")
+    
+
+
+
+
+# We could use dispatch map if there are too many sources
+source_dispatch = {
+    Source.TW: getTwCmpInfo,
+    Source.HK: getHkCmpInfo
+}
+
+def getCmpInfo1(Cmp: str = "", src: Source = Source.TW) -> dict[str, str]:
+    try:
+        return source_dispatch[src](Cmp)
+    except KeyError:
+        raise ValueError(f"Unsupported source: {src}")
+
+
+
+
+    
+    
