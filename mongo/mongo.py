@@ -10,7 +10,7 @@ collection = db["cmp_collection"]
 
 
 # Get Company information
-cmpName = "聯發科技股份有限公司"
+cmpName = "台灣積體電路製造股份有限公司"#"聯發科技股份有限公司"
 cmpSrc = "TW"
 
 #dic = getCmpInfo(cmpName, cmpSrc)
