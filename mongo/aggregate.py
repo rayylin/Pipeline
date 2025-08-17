@@ -13,7 +13,9 @@ db.d1.drop()
 s1_docs = [
     {"company": "TSMC", "source": "TW", "revenue": 100, "note": "from s1"},
     {"company": "MediaTec", "source": "TW", "revenue": 80,  "note": "from s1"},
+    {"company": "ASUS", "source": "TW", "revenue": 60,  "note": "from s2"}
 ]
+
 s2_docs = [
     {"company": "TSMC", "source": "TW", "revenue": 105, "note": "from s2 (newer)"},
     {"company": "ASUS", "source": "TW", "revenue": 60,  "note": "from s2"},
