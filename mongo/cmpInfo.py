@@ -90,6 +90,10 @@ def getCmpInfo1(Cmp: str = "", src: Source = Source.TW) -> dict[str, str]:
 
 
 
+# company information we want
+i = ["employeeRanges ", "companyRegisteredNumber","businessType","businessAddress","yearsInOperation","operationStartDate","employees","employees",
+     "annualRevenue","annualRevenueDisclosed","annualProfit","annualProfitDisclosed","totalAssets","totalAssetsDisclosed","totalLiabilities","totalLiabilities",
+     "taxDocs","equipmentList","inventoryValue","inventoryValue","suppliersInfo","licenses","violations","violationsDetails","environmentalStatus","environmentalStatusDetails",
+     "askingPrice","reasonForSelling","reasonForSelling","transitionSupport","transitionSupport"]
+dic = {}    
 
-    
-    
