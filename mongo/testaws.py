@@ -6,7 +6,9 @@ uri = mongoUri
 client = MongoClient(uri)
 
 db = client["test_db"]
-collection = db["companies_org"]
+collection = db["companies_processed"]
+
+src = "TW"
 
 s= """Company Name: 台灣積體電路製造股份有限公司
 Business_Accounting_NO: 22099131
@@ -23,6 +25,8 @@ Company_Setup_Date: 0760221
 Change_Of_Approval_Data: 1140805""".split("\n")
 
 company_data = l = {k: v for k, v in (i.split(":") for i in s)}
+company_data["Country"] = src
+company_data["Status"] = ""
 
 # Insert one document
 insert_result = collection.insert_one(company_data)
