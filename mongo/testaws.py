@@ -5,7 +5,7 @@ uri = mongoUri
 
 client = MongoClient(uri)
 
-db = client["test_database"]
+db = client["test_db"]
 collection = db["companies_org"]
 
 s= """Company Name: 台灣積體電路製造股份有限公司
