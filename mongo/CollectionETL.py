@@ -38,6 +38,9 @@ REQUIRED_FIELDS = [
     "suppliersInfo",
     "taxDocs",
     "transitionSupport",
+    "UpdateUser",
+    "UpdateTime",
+    "Validated"
 ]
 
 for doc in companies_org.find({"Status": ""}):  # be consistent: use lowercase 'status'
@@ -68,5 +71,5 @@ for doc in companies_org.find({"Status": ""}):  # be consistent: use lowercase '
     if companies_processed.find_one({"_id": doc["_id"]}, projection={"_id": 1}):
         companies_org.update_one(
             {"_id": doc["_id"], "status": ""},
-            {"$set": {"status": "P", "processedAt": now}},
+            {"$set": {"Status": "P", "processedAt": now}},
         )
