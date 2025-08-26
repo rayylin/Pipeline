@@ -10,7 +10,7 @@ db = client["test_db"]
 companies_processed = db["companies_processed"]
 companies_org = db["companies_org"]
 
-for doc in companies_org.find({"status": ""}):
+for doc in companies_org.find({"Status": ""}):
     # 1) Upsert into destination (insert or update)
     payload = {k: v for k, v in doc.items() if k not in ["_id", "status"]}  # copy all except _id/status
     companies_processed.update_one(
