@@ -1,40 +1,4 @@
-from pymongo import MongoClient
-from config import mongoUri
-
-
-uri = mongoUri 
-
-client = MongoClient(uri)
-
-db = client["test_db"]
-collection = db["companies_org"]
-
-src = "TW"
-
-s= """Company Name: 台灣積體電路製造股份有限公司
-Business_Accounting_NO: 22099131
-Company_Name: 台灣積體電路製造股份有限公司
-Company_Status: 01
-Company_Status_Desc: 核准設立
-Capital_Stock_Amount: 280500000000
-Paid_In_Capital_Amount: 259326155210
-Responsible_Name: 魏哲家
-Register_Organization: 05
-Register_Organization_Desc: 國家科學及技術委員會新竹科學園區管理局
-Company_Location: 新竹科學園區新竹市力行六路8號
-Company_Setup_Date: 0760221
-Change_Of_Approval_Data: 1140805""".split("\n")
-
-company_data = l = {k: v for k, v in (i.split(":") for i in s)}
-company_data["Country"] = src
-company_data["Status"] = ""
-
-# Insert one document
-insert_result = collection.insert_one(company_data)
-print("Inserted document ID:", insert_result.inserted_id)
-
-
-ss = """549539	三分餐飲企業社	臺北市信義區基隆路1段147巷5弄7號1樓	200000	獨資	鄭仰甫	0114/03/28	北市商三字第1144103986號
+s = """549539	三分餐飲企業社	臺北市信義區基隆路1段147巷5弄7號1樓	200000	獨資	鄭仰甫	0114/03/28	北市商三字第1144103986號
 549545	拾光甜房	臺北市中山區中山北路2段57巷7號1樓	600000	獨資	王憶心	0114/03/28	北市商三字第1144103988號
 549550	軒緯服飾商行	臺北市中山區南京東路2段176號1樓	600000	獨資	蘇邦銘	0114/03/28	北市商三字第1144103989號
 549566	修言企業社	臺北市中山區林森北路119巷21號	150000	獨資	林欣愷	0114/03/28	北市商三字第1144103992號
@@ -53,20 +17,17 @@ ss = """549539	三分餐飲企業社	臺北市信義區基隆路1段147巷5弄7�
 549714	顏毛泡芙專賣店	臺北市士林區延平北路5段260號	60000	獨資	許慈茹	0114/03/31	北市商三字第1144104050號
 549720	九川味食堂	臺北市中山區一江街40號1樓	80000	獨資	周文龍	0114/03/31	北市商三字第1144104069號""".split("\n")
 
-l = [i.split("\t") for i in ss ]
+l = [i.split("\t") for i in s ]
 
-docs = []
+dic = {}
+
 for i in l:
     if i:
-        docs.append({
-            "Country": src,
-            "Status": "",
-            "companyRegisteredNumber": i[0],
-            "companyName": i[1],
-            "operationStartDate": i[6],
-            "businessAddress": i[2],
-            "totalAssets": i[3],
-            "personInCharge": i[5],
-            "businessType": i[4]
-        })
-collection.insert_many(docs)
+        dic["companyRegisteredNumber"] = i[0]
+        dic["companyName"] = i[1]
+        dic["operationStartDate"] = i[6]
+        dic["businessAddress"] = i[2]
+        dic["totalAssets"] = i[3] 
+        dic["personInCharge"] = i[5]
+        dic["businessType"] = i[4]
+
