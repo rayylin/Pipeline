@@ -6,7 +6,7 @@ uri = mongoUri
 client = MongoClient(uri)
 
 db = client["test_db"]
-collection = db["companies_processed"]
+collection = db["companies_org"]
 
 src = "TW"
 
