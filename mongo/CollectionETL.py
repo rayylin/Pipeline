@@ -70,6 +70,6 @@ for doc in companies_org.find({"Status": ""}):  # be consistent: use lowercase '
     # Mark as processed only if it really exists in destination
     if companies_processed.find_one({"_id": doc["_id"]}, projection={"_id": 1}):
         companies_org.update_one(
-            {"_id": doc["_id"], "status": ""},
+            {"_id": doc["_id"], "Status": ""},
             {"$set": {"Status": "P", "processedAt": now}},
         )
