@@ -1,8 +1,13 @@
 from pymongo import MongoClient
-from cmpInfo import getCmpInfo
+from cmpInfo import getCmpInfo, getTwCmpInfo
+from config import mongoUri
+
 
 # Connect to MongoDB (localhost:27017)
-client = MongoClient("mongodb://localhost:27017/")
+uri = mongoUri 
+
+client = MongoClient(uri)
+
 
 # Access (or create) database and collection
 db = client["sai"]
@@ -10,14 +15,14 @@ collection = db["cmp_collection"]
 
 
 # Get Company information
-cmpName = "台灣積體電路製造股份有限公司"#"聯發科技股份有限公司"
+cmpName = "威宏控股"#"台灣積體電路製造股份有限公司"#"聯發科技股份有限公司"
 cmpSrc = "TW"
 
-#dic = getCmpInfo(cmpName, cmpSrc)
+dic = getCmpInfo(cmpName, cmpSrc)
 
 
 # Insert into mongo
-#insert_result = collection.insert_one(dic)
+insert_result = collection.insert_one(dic)
 
 # read all from mongo
 results = collection.find()
