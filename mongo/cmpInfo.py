@@ -32,6 +32,8 @@ def getTwCmpInfo(Cmp:str) -> dict[str, str]:
             dic[child.tag] =  child.text
 
     dic["companyRegisteredNumber"] = dic.pop("Business_Accounting_NO")
+    dic["businessAddress"] = dic.pop("Company_Location")
+    dic["operationStartDate"] = dic.pop("Company_Setup_Date")
 
     return dic
 
