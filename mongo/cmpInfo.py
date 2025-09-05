@@ -97,3 +97,4 @@ i = ["employeeRanges ", "companyRegisteredNumber","businessType","businessAddres
      "askingPrice","reasonForSelling","reasonForSelling","transitionSupport","transitionSupport"]
 dic = {}    
 
+print(getTwCmpInfo("威宏控股"))
