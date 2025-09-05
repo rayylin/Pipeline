@@ -10,8 +10,8 @@ client = MongoClient(uri)
 
 
 # Access (or create) database and collection
-db = client["sai"]
-collection = db["cmp_collection"]
+db = client["test_db"]
+collection = db["companies_org"]
 
 
 # Get Company information
