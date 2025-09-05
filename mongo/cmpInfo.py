@@ -19,7 +19,8 @@ def getTwCmpInfo(Cmp:str) -> dict[str, str]:
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.0.0 Safari/537.36'
     }
 
-    dic = {"CompanySource":"TW"}
+    dic = {"CompanySource":"TW",
+           "Company_Name": Cmp}
 
     response = requests.get(url, headers=headers)
     xml_str = response.text
@@ -29,6 +30,8 @@ def getTwCmpInfo(Cmp:str) -> dict[str, str]:
     for row in root.findall('row'):
         for child in row:
             dic[child.tag] =  child.text
+
+    dic["companyRegisteredNumber"] = dic.pop("Business_Accounting_NO")
 
     return dic
 
