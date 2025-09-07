@@ -73,12 +73,12 @@ print("Updated document:", updated)
 
 
 # Create another collection to perform look up
-# person = {
-#     "name": "蔡明介",
-#     "gender": "Male",
-#     "education_level": "Master's",
-#     "birth": "1950-06-15"
-# }
+person = {
+    "name": "蔡明介",
+    "gender": "Male",
+    "education_level": "Master's",
+    "birth": "1950-06-15"
+}
 
 # person_collection = db["person"]
 # person_collection.insert_one(person)
