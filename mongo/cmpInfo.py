@@ -20,7 +20,8 @@ def getTwCmpInfo(Cmp:str) -> dict[str, str]:
     }
 
     dic = {"CompanySource":"TW",
-           "Company_Name": Cmp}
+           "Company_Name": Cmp,
+           "Status": ""} 
 
     response = requests.get(url, headers=headers)
     xml_str = response.text
