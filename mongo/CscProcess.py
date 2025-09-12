@@ -5,4 +5,5 @@ df = pd.read_csv(r"C:\\Users\\dwade\\Desktop\\Pipeline\\mongo\\CmpReg_TextilePla
 
 print(df.head)
 
-
+for idx, row in df.iterrows():
+    print(row)
