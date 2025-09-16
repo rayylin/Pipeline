@@ -9,7 +9,7 @@ db = client["test_db"]
 collection = db["companies_org"]
 
 # Path to your CSV
-csv_path = r"C:\Users\dwade\Desktop\Pipeline\mongo\CmpReg_TextilePlastics.csv"
+csv_path = r"C:\Users\dwade\Desktop\Pipeline\mongo\CmpReg_WatchRetail.csv"
 
 # Header mapping: Chinese -> English
 FIELD_MAP = {
