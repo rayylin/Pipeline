@@ -6,7 +6,7 @@ from urllib.parse import urljoin, urlparse
 import urllib.robotparser as robotparser
 
 BASE = "https://hongkong-corp.com"
-START_PATH = "/A/3"   # change to the page you want, e.g. "/A/3" or "/A/1"
+START_PATH = "/A/3"  
 
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 
@@ -20,8 +20,6 @@ def allowed_to_fetch(base: str, user_agent: str, path: str) -> bool:
         rp.read()
         return rp.can_fetch(user_agent, path)
     except Exception:
-        # If robots.txt cannot be read, be conservative and return False OR True depending on your policy.
-        # Here we return False to be cautious; change if you explicitly know it's ok.
         print(f"Warning: could not read robots.txt at {robots_url}. Aborting by default.")
         return False
 
