@@ -32,8 +32,7 @@ def fetch_html(url: str, session: requests.Session, timeout: int = 20) -> str:
 
 def parse_companies_from_html(html: str):
     soup = BeautifulSoup(html, "html.parser")
-    # On this site company blocks appear to be headings (h6) with the name
-    # and the status letter/date in the following text node — adjust selectors if needed.
+    # On this site company blocks appear to be headings (h6) with the name and the status letter/date in the following text node — adjust selectors if needed.
     results = []
     # look for heading tags that appear to contain company names
     for h in soup.select("h6, h4, h3"):   # broaden to catch variations
