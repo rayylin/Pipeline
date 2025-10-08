@@ -6,7 +6,7 @@ from urllib.parse import urljoin, urlparse
 import urllib.robotparser as robotparser
 
 BASE = "https://hongkong-corp.com"
-START_PATH = "/A/3"  
+START_PATH = "/A/2"  
 
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 
