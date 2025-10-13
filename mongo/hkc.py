@@ -6,7 +6,7 @@ from urllib.parse import urljoin, urlparse
 import urllib.robotparser as robotparser
 
 BASE = "https://hongkong-corp.com"
-START_PATH = "/A/3"  
+START_PATH = "/A/4"  
 
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 
@@ -78,7 +78,7 @@ def main():
     url = start_url
     pages_scraped = 0
     max_pages = 3   # change to limit how many pages you follow during learning
-    delay_seconds = 1.5  # be polite; increase if you plan to scrape many pages
+    delay_seconds = 3  # be polite; increase if you plan to scrape many pages
 
     while url and pages_scraped < max_pages:
         print(f"Fetching: {url}")

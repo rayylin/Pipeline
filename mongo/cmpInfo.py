@@ -104,3 +104,5 @@ i = ["employeeRanges ", "companyRegisteredNumber","businessType","businessAddres
 dic = {}    
 
 print(getTwCmpInfo("威宏控股"))
+
+print(getHkCmpInfo("HSBC"))
