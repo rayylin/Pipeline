@@ -1,4 +1,4 @@
-# hkc_basic_info_only.py
+# hkc_basic_info_to_original.py
 import re
 import time
 import requests
@@ -8,20 +8,20 @@ import urllib.robotparser as robotparser
 from datetime import datetime, timezone
 from typing import Dict, Optional
 
-from pymongo import MongoClient, UpdateOne
+from pymongo import MongoClient
 from config import mongoUri
 
 # -------------------- Config --------------------
 BASE = "https://hongkong-corp.com"
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 TIMEOUT = 20
-DELAY_SECONDS = 1.0  # polite pause between requests (kept for consistency)
+DELAY_SECONDS = 1.0  # polite pause between requests
 
 # 👉 Set this to the *company detail* page you want to fetch
 # Example: "https://hongkong-corp.com/co/agarwood-technology-limited"
 TARGET_URL = "https://hongkong-corp.com/co/agarwood-technology-limited"
-# Optional: if you already know the name you want to store alongside
-TARGET_NAME = None  # e.g., "Agarwood Technology Limited"
+# Optional name to store alongside (falls back to parsed Business Name if None)
+TARGET_NAME = None
 # ------------------------------------------------
 
 
@@ -111,8 +111,27 @@ def _normalize_label(raw: str) -> Optional[str]:
 
 def _clean_value(v: str) -> str:
     v = v.replace("\xa0", " ")
+    # collapse whitespace
     v = re.sub(r"\s+", " ", v).strip()
+    # strip common trailing/leading cruft like ) ] ： : 、 。 ）
+    v = v.strip(")）]】>。：:、 ")
     return v
+
+def _normalize_br_no(v: str) -> str:
+    """
+    Extract the first plausible 8-digit BR number.
+    Handles punctuation, spaces/dashes, and trailing notes (e.g., ')', '）').
+    """
+    if not v:
+        return ""
+    cleaned = v.strip().strip(")）]】>。：:、 ")
+    m = re.search(r"\b(\d{8})\b", cleaned)
+    if m:
+        return m.group(1)
+    digits = re.sub(r"\D", "", cleaned)
+    if len(digits) >= 8:
+        return digits[:8]
+    return cleaned
 
 def _find_basic_info_container(soup: BeautifulSoup):
     # Prefer a heading containing "Basic Information" (or Chinese equivalents)
@@ -177,7 +196,10 @@ def parse_basic_info_from_html(html: str) -> Dict[str, str]:
         data.update(_pairs_from_dl(dl))
     data.update(_pairs_from_label_value_text(container))
 
-    return {k: data.get(k, "") for k in CANON_KEYS}
+    result = {k: data.get(k, "") for k in CANON_KEYS}
+    # normalize the crucial BR number
+    result["brNo"] = _normalize_br_no(result.get("brNo", ""))
+    return result
 
 def fetch_company_basic_info(session: requests.Session, url: str) -> Dict[str, str]:
     path = urlparse(url).path
@@ -189,9 +211,16 @@ def fetch_company_basic_info(session: requests.Session, url: str) -> Dict[str, s
 
 # ---------- Mongo wiring ----------
 def ensure_indexes(db) -> None:
-    db["Company_Basic_Info"].create_index("url", unique=True)
+    # Collection name as requested (note spelling): Company_HK_Orginal
+    db["Company_HK_Orginal"].create_index("url", unique=True)
 
 def upsert_basic_info(db, url: str, name: Optional[str], info: Dict[str, str]):
+    """
+    Upsert into test_db.Company_HK_Orginal:
+      - url (unique), name (fallback to parsed Business Name)
+      - all fields from CANON_KEYS
+      - createTime (on insert), updateTime (every run) in UTC
+    """
     now = datetime.now(timezone.utc)
     doc = {
         "url": url,
@@ -199,7 +228,7 @@ def upsert_basic_info(db, url: str, name: Optional[str], info: Dict[str, str]):
         **{k: info.get(k, "") for k in CANON_KEYS},
         "updateTime": now,
     }
-    db["Company_Basic_Info"].update_one(
+    db["Company_HK_Orginal"].update_one(
         {"url": url},
         {
             "$set": doc,
@@ -226,11 +255,12 @@ def main():
     # fetch & parse
     print(f"Fetching Basic Information from: {TARGET_URL}")
     info = fetch_company_basic_info(session, TARGET_URL)
+
     # store
     upsert_basic_info(db, TARGET_URL, TARGET_NAME, info)
 
     # show result
-    print("Saved to Company_Basic_Info:")
+    print("Saved to Company_HK_Orginal:")
     print(f"  url:  {TARGET_URL}")
     if TARGET_NAME:
         print(f"  name: {TARGET_NAME}")
