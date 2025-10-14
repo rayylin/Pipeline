@@ -48,27 +48,36 @@ def build_page_url(base: str, letter: str, page: int) -> str:
 
 def get_total_pages_from_html(html: str, letter: str) -> Optional[int]:
     """
-    Determine the maximum page number from pagination links like /A/8864.
-    Works even if there's no explicit 'Last' link.
+    Robustly find the total page count. Prefers plain-text counters like '1/8864'
+    or 'Page 1 of 8864'. Falls back to the max page number found in links.
     """
-    soup = BeautifulSoup(html, "html.parser")
-    max_page = None
-    pattern = re.compile(rf"/{re.escape(letter)}/(\d+)$")
+    import re
+    from bs4 import BeautifulSoup
 
+    soup = BeautifulSoup(html, "html.parser")
+
+    # 1) Prefer 'X/Y' counter near pagination
+    #    Example on the site: 'Previous 1/8864 Next'
+    text = soup.get_text(" ", strip=True)
+    m_ratio = re.search(r"\b\d+\s*/\s*(\d+)\b", text)
+    if m_ratio:
+        return int(m_ratio.group(1))
+
+    # 2) Fallback: 'Page X of Y'
+    m_page_of = re.search(r"Page\s+\d+\s+of\s+(\d+)", text, re.IGNORECASE)
+    if m_page_of:
+        return int(m_page_of.group(1))
+
+    # 3) Last resort: largest '/<LETTER>/<num>' link found (can undercount because
+    #    pagination only links to neighbors like 1 and 2)
+    max_page = None
+    pat = re.compile(rf"/{re.escape(letter)}/(\d+)$")
     for a in soup.find_all("a", href=True):
-        m = pattern.search(a["href"])
+        m = pat.search(a["href"])
         if m:
             p = int(m.group(1))
             if max_page is None or p > max_page:
                 max_page = p
-
-    if max_page is None:
-        # Fallback if the page renders "Page X of Y"
-        text = soup.get_text(" ", strip=True)
-        m2 = re.search(r"Page\s+\d+\s+of\s+(\d+)", text, re.IGNORECASE)
-        if m2:
-            max_page = int(m2.group(1))
-
     return max_page
 
 
@@ -102,7 +111,8 @@ def build_upserts(results: Dict[str, Optional[int]]) -> List[UpdateOne]:
             "letter": letter,
             "total_pages": total,
             "source_url": source_url,
-            "updated_at": now,
+            "updatedTime": now,
+            "CreateTime": now
         }
         ops.append(
             UpdateOne(
