@@ -2,11 +2,11 @@
 import re
 import time
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 from urllib.parse import urlparse, urljoin
 import urllib.robotparser as robotparser
 from datetime import datetime, timezone
-from typing import Dict, Optional
+from typing import Dict, Optional, Iterable
 
 from pymongo import MongoClient
 from config import mongoUri
@@ -18,7 +18,6 @@ TIMEOUT = 20
 DELAY_SECONDS = 1.0  # polite pause between requests
 
 # 👉 Set this to the *company detail* page you want to fetch
-# Example: "https://hongkong-corp.com/co/agarwood-technology-limited"
 TARGET_URL = "https://hongkong-corp.com/co/agarwood-technology-limited"
 # Optional name to store alongside (falls back to parsed Business Name if None)
 TARGET_NAME = None
@@ -46,8 +45,8 @@ def fetch_html(url: str, session: requests.Session, timeout: int = TIMEOUT) -> s
 
 # ---------- Basic Information parsing ----------
 BASIC_INFO_SECTION_TITLES = [
-    "Basic Information", "Basic information",
-    "基本資料", "公司基本資料", "公司資料"
+    "Basic Info", "Basic Information", "Basic information",
+    "基本信息", "基本資料", "公司基本資料", "公司資料"
 ]
 
 CANON_KEYS = [
@@ -67,61 +66,63 @@ CANON_KEYS = [
 LABEL_MAP = {
     r"\b(BR|CR)\s*No\.?\b": "brNo",
     r"Business\s*Registration\s*(?:No|Number)\b": "brNo",
-    r"公司(?:註冊|登記)?編號": "brNo",
+    r"公司(?:註冊|登記)?編號|商業登記(?:號|號碼)": "brNo",
 
     r"^Business\s*Name\b": "Business Name",
     r"^公司名稱$": "Business Name",
 
     r"Business\s*Name\s*\(Chinese\)": "Business Name(Chinese)",
-    r"公司名稱（?中文）?$": "Business Name(Chinese)",
-    r"中文名稱": "Business Name(Chinese)",
+    r"公司名稱（?中文）?$|中文名稱|公司其他名稱": "Business Name(Chinese)",
 
     r"^Registration\s*Date\b": "Registration Date",
-    r"註冊日期": "Registration Date",
+    r"註冊日期|成立日期": "Registration Date",
 
     r"^Business\s*Status\b": "Business Status",
-    r"公司狀態|現況": "Business Status",
+    r"公司狀態|現況|公司現狀|公司狀態為|公司现况": "Business Status",
 
     r"^Business\s*Type\b": "Business Type",
-    r"公司類別|公司類型": "Business Type",
+    r"公司類別|公司類型|公司类别|公司类型": "Business Type",
 
     r"^Remarks?$": "Remarks",
-    r"備註": "Remarks",
+    r"備註|备注": "Remarks",
 
     r"^Winding\s*Up\s*Mode\b": "Winding Up Mode",
-    r"清盤模式": "Winding Up Mode",
+    r"清盤模式|清盘模式": "Winding Up Mode",
 
     r"Date\s*of\s*Dissolution\s*/\s*Ceasing\s*to\s*Exist": "Date of Dissolution / Ceasing to Exist",
-    r"解散.*日期|註銷.*日期": "Date of Dissolution / Ceasing to Exist",
+    r"已告解散.*日期|不再是.*日期|解散.*日期|註銷.*日期|注销.*日期": "Date of Dissolution / Ceasing to Exist",
 
     r"^Register\s*of\s*Charges\b": "Register of Charges",
-    r"押記登記冊": "Register of Charges",
+    r"押記登記冊|押记登记册": "Register of Charges",
 
     r"^Important\s*Note\b": "Important Note",
-    r"重要提示|重要備註": "Important Note",
+    r"重要提示|重要備註|重要事項|重要事项": "Important Note",
 }
 LABEL_PATTERNS = [(re.compile(p, re.IGNORECASE), key) for p, key in LABEL_MAP.items()]
 
-def _normalize_label(raw: str) -> Optional[str]:
-    label = " ".join(raw.replace("\xa0", " ").split()).strip().strip(":：")
+STOP_SECTION_TITLES = [
+    "Name History", "更名历史", "文件索引", "Document Index", "Comments", "Similar Names"
+]
+
+def _normalize_label_text(s: str) -> Optional[str]:
+    s = " ".join(s.replace("\xa0", " ").split()).strip().strip(":：")
     for rx, key in LABEL_PATTERNS:
-        if rx.search(label):
+        if rx.search(s):
             return key
     return None
 
+def _text(node: Optional[Tag]) -> str:
+    if node is None:
+        return ""
+    return " ".join(node.get_text(" ", strip=True).replace("\xa0", " ").split())
+
 def _clean_value(v: str) -> str:
     v = v.replace("\xa0", " ")
-    # collapse whitespace
     v = re.sub(r"\s+", " ", v).strip()
-    # strip common trailing/leading cruft like ) ] ： : 、 。 ）
     v = v.strip(")）]】>。：:、 ")
     return v
 
 def _normalize_br_no(v: str) -> str:
-    """
-    Extract the first plausible 8-digit BR number.
-    Handles punctuation, spaces/dashes, and trailing notes (e.g., ')', '）').
-    """
     if not v:
         return ""
     cleaned = v.strip().strip(")）]】>。：:、 ")
@@ -133,73 +134,99 @@ def _normalize_br_no(v: str) -> str:
         return digits[:8]
     return cleaned
 
-def _find_basic_info_container(soup: BeautifulSoup):
-    # Prefer a heading containing "Basic Information" (or Chinese equivalents)
-    for hdr in soup.find_all(["h1","h2","h3","h4","h5"], string=True):
-        txt = hdr.get_text(" ", strip=True)
-        if any(t.lower() in txt.lower() for t in BASIC_INFO_SECTION_TITLES):
-            sib = hdr.find_next(lambda tag: tag.name in ["table","dl","section","div"])
-            if sib: return sib
-            return hdr.parent if hdr.parent else hdr
-    # Otherwise, return a likely container containing our labels
-    for node in soup.find_all(["table","dl","section","div"]):
-        txt = node.get_text(" ", strip=True)
-        if any(re.search(p, txt, re.IGNORECASE) for p in LABEL_MAP.keys()):
-            return node
-    # Fallback: entire page
-    return soup
+def _is_section_header(tag: Tag) -> bool:
+    if tag.name in ["h1","h2","h3","h4","h5","h6"]:
+        t = _text(tag)
+        if any(st.lower() in t.lower() for st in STOP_SECTION_TITLES):
+            return True
+    return False
 
-def _pairs_from_table(table) -> Dict[str, str]:
-    out = {}
-    for tr in table.find_all("tr"):
-        cells = tr.find_all(["th","td"])
-        if len(cells) < 2: continue
-        key = _normalize_label(cells[0].get_text(" ", strip=True))
-        if not key: continue
-        out[key] = _clean_value(cells[1].get_text(" ", strip=True))
-    return out
+def _find_basic_info_header(soup: BeautifulSoup) -> Optional[Tag]:
+    for hdr in soup.find_all(["h1","h2","h3","h4","h5","h6"]):
+        t = _text(hdr)
+        if any(title.lower() in t.lower() for title in BASIC_INFO_SECTION_TITLES):
+            return hdr
+    return None
 
-def _pairs_from_dl(dl) -> Dict[str, str]:
-    out = {}
-    for dt in dl.find_all("dt"):
-        dd = dt.find_next_sibling("dd")
-        if not dd: continue
-        key = _normalize_label(dt.get_text(" ", strip=True))
-        if not key: continue
-        out[key] = _clean_value(dd.get_text(" ", strip=True))
-    return out
-
-def _pairs_from_label_value_text(container) -> Dict[str, str]:
-    out = {}
-    for node in container.find_all(text=True):
-        txt = str(node)
-        if ":" in txt or "：" in txt:
-            parts = re.split(r"[:：]", txt, maxsplit=1)
-            if len(parts) != 2: continue
-            key = _normalize_label(parts[0])
-            if not key: continue
-            val = _clean_value(parts[1])
-            if val:
-                out[key] = val
-    return out
+def _next_value_after(tag: Tag) -> str:
+    """
+    From a label tag, walk forward to find the first non-empty text block
+    that is NOT another label or a major section header.
+    """
+    cur = tag
+    for nxt in cur.find_all_next():
+        if nxt is cur:
+            continue
+        if isinstance(nxt, Tag):
+            if _is_section_header(nxt):
+                break  # stop at next big section
+            t = _text(nxt)
+            if not t:
+                continue
+            # skip if it's clearly another label (english/chinese echo)
+            if _normalize_label_text(t):
+                continue
+            return _clean_value(t)
+        elif isinstance(nxt, NavigableString):
+            s = str(nxt).strip()
+            if s:
+                return _clean_value(s)
+    return ""
 
 def parse_basic_info_from_html(html: str) -> Dict[str, str]:
     soup = BeautifulSoup(html, "html.parser")
-    container = _find_basic_info_container(soup)
-    data: Dict[str, str] = {}
+    data: Dict[str, str] = {k: "" for k in CANON_KEYS}
 
-    table = container.find("table")
+    # Find the Basic Info header and parse forward
+    header = _find_basic_info_header(soup)
+    search_root = header if header is not None else soup
+
+    # 1) Table/DL quick paths (if present)
+    table = search_root.find_next("table") if header else soup.find("table")
     if table:
-        data.update(_pairs_from_table(table))
-    dl = container.find("dl")
+        for tr in table.find_all("tr"):
+            cells = tr.find_all(["th","td"])
+            if len(cells) >= 2:
+                key = _normalize_label_text(_text(cells[0]))
+                if key:
+                    data[key] = _clean_value(_text(cells[1]))
+    dl = search_root.find_next("dl") if header else soup.find("dl")
     if dl:
-        data.update(_pairs_from_dl(dl))
-    data.update(_pairs_from_label_value_text(container))
+        for dt in dl.find_all("dt"):
+            dd = dt.find_next_sibling("dd")
+            if not dd:
+                continue
+            key = _normalize_label_text(_text(dt))
+            if key:
+                data[key] = _clean_value(_text(dd))
 
-    result = {k: data.get(k, "") for k in CANON_KEYS}
-    # normalize the crucial BR number
-    result["brNo"] = _normalize_br_no(result.get("brNo", ""))
-    return result
+    # 2) Label-then-next-block pattern (dominant on this site)
+    #    Scan forward from the Basic Info header
+    scan_start = header if header else soup
+    for tag in scan_start.find_all_next(True):
+        if header and _is_section_header(tag) and tag is not header:
+            # Stop once we hit next major section (e.g., Name History)
+            break
+        t = _text(tag)
+        key = _normalize_label_text(t)
+        if not key:
+            continue
+        # find the value that follows this label
+        val = _next_value_after(tag)
+        if not val:
+            continue
+        # Business Type often has CN + EN on two consecutive blocks; prefer EN if present
+        if key == "Business Type" and data[key]:
+            # Keep an English-looking value if available
+            if re.search(r"[A-Za-z]", val):
+                data[key] = val
+        else:
+            data[key] = val
+
+    # 3) Normalize BR No
+    data["brNo"] = _normalize_br_no(data.get("brNo", ""))
+
+    return data
 
 def fetch_company_basic_info(session: requests.Session, url: str) -> Dict[str, str]:
     path = urlparse(url).path
@@ -211,21 +238,14 @@ def fetch_company_basic_info(session: requests.Session, url: str) -> Dict[str, s
 
 # ---------- Mongo wiring ----------
 def ensure_indexes(db) -> None:
-    # Collection name as requested (note spelling): Company_HK_Orginal
     db["Company_HK_Orginal"].create_index("url", unique=True)
 
 def upsert_basic_info(db, url: str, name: Optional[str], info: Dict[str, str]):
-    """
-    Upsert into test_db.Company_HK_Orginal:
-      - url (unique), name (fallback to parsed Business Name)
-      - all fields from CANON_KEYS
-      - createTime (on insert), updateTime (every run) in UTC
-    """
     now = datetime.now(timezone.utc)
     doc = {
         "url": url,
         "name": name or info.get("Business Name", ""),
-        **{k: info.get(k, "") for k in CANON_KEYS},
+        **info,
         "updateTime": now,
     }
     db["Company_HK_Orginal"].update_one(
