@@ -1,181 +1,161 @@
-# count_pages_store_mongo.py
-import re
+# collect_letter_page_counts.py
 import time
-import logging
-from datetime import datetime
-from urllib.parse import urljoin, urlparse
-
+import re
+import string
 import requests
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
-from typing import List, Optional, Dict
+from urllib.parse import urljoin, urlparse
+import urllib.robotparser as robotparser
+from datetime import datetime, timezone
+from typing import Optional, Iterable, Dict, List
 
-# replace this import with your existing config that defines mongoUri
+from pymongo import MongoClient, UpdateOne
 from config import mongoUri
 
-# ---- Config ----
 BASE = "https://hongkong-corp.com"
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
-CHARACTERS = [chr(c) for c in range(ord("A"), ord("Z") + 1)]  # default A-Z
-START_PAGE = 1
-REQUEST_TIMEOUT = 20
-RETRY_ATTEMPTS = 3
-DELAY_BETWEEN_REQUESTS = 1.2  # be polite
-LOG_LEVEL = logging.INFO
 
-# ---- Logging ----
-logging.basicConfig(level=LOG_LEVEL, format="%(asctime)s %(levelname)s %(message)s")
-logger = logging.getLogger(__name__)
+# Letters to scan — adjust if the site also supports digits or other buckets
+LETTER_BUCKETS = list(string.ascii_uppercase)  # ["A", "B", ..., "Z"]
 
-# ---- Mongo setup ----
-client = MongoClient(mongoUri)
-db = client["test_db"]
-collection = db["Companies_Page_Dic"]
+DELAY_SECONDS = 1.5   # polite delay between letters
+TIMEOUT = 20          # request timeout
 
 
+# ---------- HTTP & robots ----------
 def allowed_to_fetch(base: str, user_agent: str, path: str) -> bool:
-    """Check robots.txt permission. Conservative: if robots.txt can't be read, return False."""
-    import urllib.robotparser as robotparser
-
     robots_url = urljoin(base, "/robots.txt")
     rp = robotparser.RobotFileParser()
     try:
         rp.set_url(robots_url)
         rp.read()
-        ok = rp.can_fetch(user_agent, path)
-        logger.debug("robots.txt: can_fetch(%s) => %s", path, ok)
-        return ok
-    except Exception as e:
-        logger.warning("Could not read robots.txt at %s: %s. Aborting by default.", robots_url, e)
+        return rp.can_fetch(user_agent, path)
+    except Exception:
+        print(f"Warning: could not read robots.txt at {robots_url}. Aborting by default.")
         return False
 
 
-def fetch(url: str, session: requests.Session, timeout: int = REQUEST_TIMEOUT) -> str:
-    """Fetch a URL with retries, raise for non-200 except handle gracefully upstream."""
-    for attempt in range(RETRY_ATTEMPTS):
-        try:
-            resp = session.get(url, timeout=timeout)
-            if resp.status_code == 200:
-                return resp.text
-            elif resp.status_code == 404:
-                # Not found: caller will interpret as zero pages
-                logger.debug("Received 404 for %s", url)
-                resp.raise_for_status()
-            else:
-                resp.raise_for_status()
-        except requests.RequestException as e:
-            logger.warning("Request failed (%s): %s (attempt %d/%d)", url, e, attempt + 1, RETRY_ATTEMPTS)
-            time.sleep(1 + attempt * 1.5)
-    # after retries, raise last exception
-    raise RuntimeError(f"Failed to fetch {url} after {RETRY_ATTEMPTS} attempts")
+def fetch_html(url: str, session: requests.Session, timeout: int = TIMEOUT) -> str:
+    resp = session.get(url, timeout=timeout)
+    resp.raise_for_status()
+    return resp.text
 
 
-def parse_max_page_from_html(html: str, char: str) -> Dict:
-    """Parse HTML and find the maximum page number for this character.
-       Returns dict with keys: pages (int), raw_links (list of hrefs), company_count_sample (int).
+# ---------- Page parsing ----------
+def build_page_url(base: str, letter: str, page: int) -> str:
+    return urljoin(base, f"/{letter}/{page}")
+
+
+def get_total_pages_from_html(html: str, letter: str) -> Optional[int]:
+    """
+    Determine the maximum page number from pagination links like /A/8864.
+    Works even if there's no explicit 'Last' link.
     """
     soup = BeautifulSoup(html, "html.parser")
+    max_page = None
+    pattern = re.compile(rf"/{re.escape(letter)}/(\d+)$")
 
-    # 1) collect pagination numeric links: match paths like '/A/3' or '/A/10'
-    raw_links = []
-    page_numbers = set()
     for a in soup.find_all("a", href=True):
-        href = a["href"]
-        # normalize path (ignore query params)
-        path = urlparse(href).path
-        raw_links.append(href)
-        # regex: /<char>/<number> (case-insensitive)
-        m = re.match(rf"^/{re.escape(char)}/(\d+)$", path, flags=re.I)
+        m = pattern.search(a["href"])
         if m:
-            page_numbers.add(int(m.group(1)))
+            p = int(m.group(1))
+            if max_page is None or p > max_page:
+                max_page = p
 
-    # 2) fallback: if no numeric pagination found, detect if there are company nodes on the page
-    #    heuristics: site used headings like h6 for company names (previous scripts used that).
-    company_nodes = soup.select("h6, h4, h3, .company, .company-list-item")  # broad
-    company_count_sample = len(company_nodes)
+    if max_page is None:
+        # Fallback if the page renders "Page X of Y"
+        text = soup.get_text(" ", strip=True)
+        m2 = re.search(r"Page\s+\d+\s+of\s+(\d+)", text, re.IGNORECASE)
+        if m2:
+            max_page = int(m2.group(1))
 
-    if page_numbers:
-        max_page = max(page_numbers)
-    else:
-        # If there are companies on first page -> at least 1
-        if company_count_sample > 0:
-            max_page = 1
-        else:
-            max_page = 0
-
-    return {
-        "pages": max_page,
-        "raw_pagination_links": list(set(raw_links)),
-        "company_count_sample": company_count_sample,
-    }
+    return max_page
 
 
-def get_max_pages_for_char(char: str, session: requests.Session) -> int:
-    """Get max pages for character `char`. Tries page 1 and inspects pagination links."""
-    path = f"/{char}/{START_PAGE}"
-    url = urljoin(BASE, path)
-    try:
-        html = fetch(url, session)
-    except Exception as e:
-        logger.info("Could not fetch %s: %s", url, e)
-        return 0
+def get_total_pages_for_letter(session: requests.Session, letter: str) -> Optional[int]:
+    """
+    Fetch /<letter>/1 and parse total page count.
+    Returns None if it cannot be determined.
+    """
+    url = build_page_url(BASE, letter, 1)
+    path = urlparse(url).path
+    if not allowed_to_fetch(BASE, USER_AGENT, path):
+        print(f"robots.txt disallows fetching {path}; skipping {letter}.")
+        return None
 
-    parsed = parse_max_page_from_html(html, char)
-    pages = parsed["pages"]
-
-    # If parsed.pages == 1, we might still want to double-check if the site hides numeric links:
-    # but for learning purposes this rule is reliable: if pagination links exist we used them;
-    # otherwise we assume single page if companies found, else zero.
-    logger.debug("Character %s -> parse result: %s", char, parsed)
-    return pages
+    html = fetch_html(url, session)
+    return get_total_pages_from_html(html, letter)
 
 
-def upsert_char_pages(char: str, pages: int, raw_links: List[str]):
-    """Upsert result into MongoDB collection."""
-    doc = {
-        "char": char,
-        "pages": pages,
-        "raw_pagination_links": raw_links,
-        "source": BASE,
-        "checked_at": datetime.utcnow(),
-    }
-    result = collection.update_one({"char": char}, {"$set": doc}, upsert=True)
-    logger.info("Upserted %s -> pages=%d (matched=%s, modified=%s, upserted_id=%s)",
-                char, pages, result.matched_count, result.modified_count, getattr(result, "upserted_id", None))
+# ---------- Mongo helpers ----------
+def ensure_indexes(collection) -> None:
+    # Ensure unique index on letter so we can upsert cleanly
+    collection.create_index("letter", unique=True)
 
 
-def main(chars: Optional[List[str]] = None):
-    chars = chars or CHARACTERS
+def build_upserts(results: Dict[str, Optional[int]]) -> List[UpdateOne]:
+    now = datetime.now(timezone.utc)
+    ops: List[UpdateOne] = []
+    for letter, total in results.items():
+        source_url = build_page_url(BASE, letter, 1)
+        doc = {
+            "letter": letter,
+            "total_pages": total,
+            "source_url": source_url,
+            "updated_at": now,
+        }
+        ops.append(
+            UpdateOne(
+                {"letter": letter},
+                {"$set": doc},
+                upsert=True,
+            )
+        )
+    return ops
 
-    # check robots
-    test_path = "/A/1"
-    if not allowed_to_fetch(BASE, USER_AGENT, test_path):
-        logger.error("Robots disallow scraping or robots.txt could not be read. Exiting.")
-        return
 
+# ---------- Orchestration ----------
+def collect_page_counts(letters: Iterable[str]) -> Dict[str, Optional[int]]:
     session = requests.Session()
     session.headers.update({"User-Agent": USER_AGENT})
 
-    for i, ch in enumerate(chars, start=1):
+    out: Dict[str, Optional[int]] = {}
+    for i, letter in enumerate(letters, 1):
         try:
-            logger.info("Checking character %s (%d/%d)", ch, i, len(chars))
-            pages = get_max_pages_for_char(ch, session)
-
-            # For auditability, fetch page1 again and parse raw links for storage
-            try:
-                html = fetch(urljoin(BASE, f"/{ch}/1"), session)
-                parsed = parse_max_page_from_html(html, ch)
-                raw_links = parsed["raw_pagination_links"]
-            except Exception:
-                raw_links = []
-
-            upsert_char_pages(ch, pages, raw_links)
+            total = get_total_pages_for_letter(session, letter)
+            out[letter] = total
+            print(f"[{i}/{len(letters)}] {letter}: total_pages={total}")
+        except requests.HTTPError as e:
+            print(f"HTTP error for {letter}: {e}")
+            out[letter] = None
         except Exception as e:
-            logger.exception("Error while processing %s: %s", ch, e)
-        finally:
-            time.sleep(DELAY_BETWEEN_REQUESTS)
+            print(f"Unexpected error for {letter}: {e}")
+            out[letter] = None
 
-    logger.info("Done checking characters.")
+        time.sleep(DELAY_SECONDS)
+    return out
+
+
+def main():
+    # 1) collect page counts
+    results = collect_page_counts(LETTER_BUCKETS)
+
+    # 2) store in MongoDB
+    uri = mongoUri
+    client = MongoClient(uri)
+    db = client["test_db"]
+    collection = db["Companies_Page_Dic"]
+    ensure_indexes(collection)
+
+    ops = build_upserts(results)
+    if ops:
+        res = collection.bulk_write(ops, ordered=False)
+        print(
+            f"Mongo upsert complete. matched={res.matched_count}, "
+            f"modified={res.modified_count}, upserted={len(res.upserted_ids)}"
+        )
+    else:
+        print("No ops to write.")
 
 
 if __name__ == "__main__":
