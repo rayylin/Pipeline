@@ -90,11 +90,21 @@ LABEL_PATTERNS = [(re.compile(p, re.IGNORECASE), key) for p, key in LABEL_MAP.it
 STOP_SECTION_TITLES = ["Name History","更名历史","文件索引","Document Index","Comments","Similar Names"]
 
 def _normalize_label_text(s: str) -> Optional[str]:
-    s = " ".join(s.replace("\xa0"," ").split()).strip().strip(":：")
-    for rx, key in LABEL_PATTERNS:
-        if rx.search(s): return key
-    return None
+    s = " ".join(s.replace("\xa0", " ").split()).strip().strip(":：")
 
+    # Prefer the '(Chinese)' variant first if explicitly present
+    if re.search(r"Business\s*Name\s*\(Chinese\)", s, re.IGNORECASE):
+        return "Business Name(Chinese)"
+
+    # If both CN and EN appear on one line, prefer the English key
+    if ("公司名稱" in s or "公司名称" in s) and re.search(r"\bBusiness\s*Name\b", s, re.IGNORECASE):
+        return "Business Name"
+
+    # Otherwise fall back to the generic pattern list
+    for rx, key in LABEL_PATTERNS:
+        if rx.search(s):
+            return key
+    return None
 def _text(node: Optional[Tag]) -> str:
     if node is None: return ""
     return " ".join(node.get_text(" ", strip=True).replace("\xa0"," ").split())
