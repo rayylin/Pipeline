@@ -222,13 +222,16 @@ def collect_page_counts(letters: Iterable[str]) -> Dict[str, Optional[int]]:
     return out
 
 
-def Fetch_Page_url(character, pageNum, session):
+    db = client["test_db"]
+def Fetch_Page_url(character, pageNum, session, db):
 
     print(f"\nFetching companies for {character}/{pageNum} and writing to Company_Url_Dic...")
-    pairs = fetch_companies_on_page(session, FETCH_LETTER, FETCH_PAGE)
+    pairs = fetch_companies_on_page(session, character, pageNum)
     if not pairs:
         print("No companies found or fetch not allowed.")
         return
+    
+    
 
     ops2 = build_company_upserts(pairs)
     res2 = db["Company_Url_Dic"].bulk_write(ops2, ordered=False)
@@ -241,7 +244,7 @@ def Fetch_Page_url(character, pageNum, session):
     for name, url in pairs[:5]:
         print(f"example: {name} -> {url}")
 
-def Fetch_PageCount_ByCharacter(buckets):
+def Fetch_PageCount_ByCharacter(buckets, db):
     
     print("Collecting total page counts per letter...")
     page_counts = collect_page_counts(buckets)
@@ -267,10 +270,13 @@ def main():
     ensure_indexes(db)
 
     # ---- Task 1: collect and store total pages per letter ----
-    Fetch_PageCount_ByCharacter(LETTER_BUCKETS)
+    # Fetch_PageCount_ByCharacter(LETTER_BUCKETS, db)
 
     # ---- Task 2: fetch A/1 companies and store into Company_Url_Dic ----
-    Fetch_Page_url(FETCH_LETTER, FETCH_PAGE, session)
+    
+    for i in range(1,10):
+        Fetch_Page_url(FETCH_LETTER, i, session, db)
+        time.sleep(DELAY_SECONDS)
 
 
 if __name__ == "__main__":
