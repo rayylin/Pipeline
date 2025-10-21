@@ -53,25 +53,37 @@ LABEL_MAP = {
     r"\b(BR|CR)\s*No\.?\b": "brNo",
     r"Business\s*Registration\s*(?:No|Number)\b": "brNo",
     r"公司(?:註冊|登記)?編號|商業登記(?:號|號碼)": "brNo",
-    r"^Business\s*Name\b": "Business Name",
-    r"^公司名稱$": "Business Name",
+
+    # ↓ remove ^ so it matches '公司名称 Business Name'
+    r"\bBusiness\s*Name\b": "Business Name",
+    r"公司名稱|公司名称": "Business Name",
+
+    # keep the (Chinese) variant more specific and listed BEFORE plain Business Name
     r"Business\s*Name\s*\(Chinese\)": "Business Name(Chinese)",
-    r"公司名稱（?中文）?$|中文名稱|公司其他名稱": "Business Name(Chinese)",
-    r"^Registration\s*Date\b": "Registration Date",
+    r"公司名稱（?中文）?|中文名稱|公司其他名稱|公司其他名称": "Business Name(Chinese)",
+
+    r"\bRegistration\s*Date\b": "Registration Date",
     r"註冊日期|成立日期": "Registration Date",
-    r"^Business\s*Status\b": "Business Status",
+
+    r"\bBusiness\s*Status\b": "Business Status",
     r"公司狀態|現況|公司現狀|公司狀態為|公司现况": "Business Status",
-    r"^Business\s*Type\b": "Business Type",
+
+    r"\bBusiness\s*Type\b": "Business Type",
     r"公司類別|公司類型|公司类别|公司类型": "Business Type",
-    r"^Remarks?$": "Remarks",
+
+    r"\bRemarks?\b": "Remarks",
     r"備註|备注": "Remarks",
-    r"^Winding\s*Up\s*Mode\b": "Winding Up Mode",
+
+    r"\bWinding\s*Up\s*Mode\b": "Winding Up Mode",
     r"清盤模式|清盘模式": "Winding Up Mode",
+
     r"Date\s*of\s*Dissolution\s*/\s*Ceasing\s*to\s*Exist": "Date of Dissolution / Ceasing to Exist",
     r"已告解散.*日期|不再是.*日期|解散.*日期|註銷.*日期|注销.*日期": "Date of Dissolution / Ceasing to Exist",
-    r"^Register\s*of\s*Charges\b": "Register of Charges",
+
+    r"\bRegister\s*of\s*Charges\b": "Register of Charges",
     r"押記登記冊|押记登记册": "Register of Charges",
-    r"^Important\s*Note\b": "Important Note",
+
+    r"\bImportant\s*Note\b": "Important Note",
     r"重要提示|重要備註|重要事項|重要事项": "Important Note",
 }
 LABEL_PATTERNS = [(re.compile(p, re.IGNORECASE), key) for p, key in LABEL_MAP.items()]
