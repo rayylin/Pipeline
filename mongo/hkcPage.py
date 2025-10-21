@@ -189,7 +189,8 @@ def main():
     if not TARGET_URL:
         raise SystemExit("Please set TARGET_URL to a company detail URL.")
     session = requests.Session(); session.headers.update({"User-Agent": USER_AGENT})
-    client = MongoClient(mongoUri); db = client["test_db"]; ensure_indexes(db)
+    client = MongoClient(mongoUri); 
+    db = client["test_db"]; ensure_indexes(db)
 
     print(f"Fetching Basic Information from: {TARGET_URL}")
     info = fetch_company_basic_info(session, TARGET_URL)
