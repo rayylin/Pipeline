@@ -206,23 +206,91 @@ def upsert_basic_info(db, url: str, name: Optional[str], info: dict):
         upsert=True,
     )
 
-# ---------- Main ----------
-def main():
-    if not TARGET_URL:
+def fetch_Page_Info(targetUrl):
+    if not targetUrl:
         raise SystemExit("Please set TARGET_URL to a company detail URL.")
     session = requests.Session(); session.headers.update({"User-Agent": USER_AGENT})
     client = MongoClient(mongoUri); 
-    db = client["test_db"]; ensure_indexes(db)
+    db = client["test_db"]; 
+    ensure_indexes(db)
 
-    print(f"Fetching Basic Information from: {TARGET_URL}")
-    info = fetch_company_basic_info(session, TARGET_URL)
-    upsert_basic_info(db, TARGET_URL, TARGET_NAME, info)
+    print(f"Fetching Basic Information from: {targetUrl}")
+    info = fetch_company_basic_info(session, targetUrl)
+    upsert_basic_info(db, targetUrl, TARGET_NAME, info)
 
     print("Saved to Company_HK_Orginal:")
-    print(f"  url:  {TARGET_URL}")
+    print(f"  url:  {targetUrl}")
     if TARGET_NAME: print(f"  name: {TARGET_NAME}")
     for k in CANON_KEYS: print(f"  {k}: {info.get(k, '')}")
     time.sleep(DELAY_SECONDS)
+
+
+# ---------- Mongo: URL queue (Company_Url_Dic) ----------
+def ensure_indexes_queue(db):
+    col = db["Company_Url_Dic"]
+    col.create_index("url", unique=True)
+    col.create_index("status")
+
+def claim_one_pending(db) -> Optional[dict]:
+    """
+    Atomically claim ONE pending URL (status "" or missing).
+    Sets status="IN_PROGRESS" to avoid double-processing.
+    """
+    from pymongo import ReturnDocument
+    now = datetime.now(timezone.utc)
+    return db["Company_Url_Dic"].find_one_and_update(
+        {"$or": [{"status": ""}, {"status": {"$exists": False}}]},
+        {"$set": {"status": "IN_PROGRESS", "updateTime": now}},
+        sort=[("_id", 1)],
+        return_document=ReturnDocument.AFTER,
+    )
+
+def mark_processed(db, _id, extra: dict | None = None):
+    now = datetime.now(timezone.utc)
+    update = {"$set": {"status": "P", "updateTime": now}}
+    if extra: update["$set"].update(extra)
+    db["Company_Url_Dic"].update_one({"_id": _id}, update)
+
+def mark_error(db, _id, error_message: str):
+    now = datetime.now(timezone.utc)
+    db["Company_Url_Dic"].update_one(
+        {"_id": _id},
+        {"$set": {"status": "E", "error": error_message[:500], "updateTime": now}},
+    )
+
+# ---------- Orchestration ----------
+def process_one_from_queue():
+    """
+    Claims one pending URL from Company_Url_Dic, runs fetch_Page_Info(url),
+    then marks status to 'P' (or 'E' on failure).
+    """
+    client = MongoClient(mongoUri)
+    db = client["test_db"]
+    ensure_indexes_queue(db)
+
+    doc = claim_one_pending(db)
+    if not doc:
+        print("No pending URLs in Company_Url_Dic.")
+        return False
+
+    _id = doc["_id"]
+    url = doc.get("url", "")
+    name = doc.get("name", "")
+    print(f"Processing {_id} | {name} -> {url}")
+
+    try:
+        fetch_Page_Info(url)  # writes to Company_HK_Orginal
+        mark_processed(db, _id)
+        print(f"Done & marked P: {_id}")
+        return True
+    except Exception as e:
+        mark_error(db, _id, str(e))
+        print(f"Error & marked E: {_id} | {e}")
+        return True
+
+# ---------- Main ----------
+def main():
+     process_one_from_queue()
 
 if __name__ == "__main__":
     main()
