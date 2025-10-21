@@ -218,35 +218,13 @@ def collect_page_counts(letters: Iterable[str]) -> Dict[str, Optional[int]]:
             print(f"Unexpected error for {letter}: {e}")
             out[letter] = None
         time.sleep(DELAY_SECONDS)
+        
     return out
 
 
-def main():
-    # Shared session
-    session = requests.Session()
-    session.headers.update({"User-Agent": USER_AGENT})
+def Fetch_Page_url(character, pageNum, session):
 
-    # ---- Mongo bootstrap ----
-    uri = mongoUri
-    client = MongoClient(uri)
-    db = client["test_db"]
-    ensure_indexes(db)
-
-    # ---- Task 1: collect and store total pages per letter ----
-    print("Collecting total page counts per letter...")
-    page_counts = collect_page_counts(LETTER_BUCKETS)
-    ops1 = build_pagecount_upserts(page_counts)
-    if ops1:
-        res1 = db["Companies_Page_Dic"].bulk_write(ops1, ordered=False)
-        print(
-            f"Companies_Page_Dic upsert complete. matched={res1.matched_count}, "
-            f"modified={res1.modified_count}, upserted={len(res1.upserted_ids)}"
-        )
-    else:
-        print("No page-count ops to write.")
-
-    # ---- Task 2: fetch A/1 companies and store into Company_Url_Dic ----
-    print(f"\nFetching companies for {FETCH_LETTER}/{FETCH_PAGE} and writing to Company_Url_Dic...")
+    print(f"\nFetching companies for {character}/{pageNum} and writing to Company_Url_Dic...")
     pairs = fetch_companies_on_page(session, FETCH_LETTER, FETCH_PAGE)
     if not pairs:
         print("No companies found or fetch not allowed.")
@@ -262,6 +240,37 @@ def main():
     # Also print a couple examples to stdout for visibility
     for name, url in pairs[:5]:
         print(f"example: {name} -> {url}")
+
+def Fetch_PageCount_ByCharacter(buckets):
+    
+    print("Collecting total page counts per letter...")
+    page_counts = collect_page_counts(buckets)
+    ops1 = build_pagecount_upserts(page_counts)
+    if ops1:
+        res1 = db["Companies_Page_Dic"].bulk_write(ops1, ordered=False)
+        print(
+            f"Companies_Page_Dic upsert complete. matched={res1.matched_count}, "
+            f"modified={res1.modified_count}, upserted={len(res1.upserted_ids)}"
+        )
+    else:
+        print("No page-count ops to write.")
+
+def main():
+    # Shared session
+    session = requests.Session()
+    session.headers.update({"User-Agent": USER_AGENT})
+
+    # ---- Mongo bootstrap ----
+    uri = mongoUri
+    client = MongoClient(uri)
+    db = client["test_db"]
+    ensure_indexes(db)
+
+    # ---- Task 1: collect and store total pages per letter ----
+    Fetch_PageCount_ByCharacter(LETTER_BUCKETS)
+
+    # ---- Task 2: fetch A/1 companies and store into Company_Url_Dic ----
+    Fetch_Page_url(FETCH_LETTER, FETCH_PAGE, session)
 
 
 if __name__ == "__main__":
