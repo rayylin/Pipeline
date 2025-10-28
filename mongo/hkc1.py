@@ -274,7 +274,7 @@ def main():
 
     # ---- Task 2: fetch A/1 companies and store into Company_Url_Dic ----
     
-    for i in range(1,10):
+    for i in range(1,1000):
         Fetch_Page_url(FETCH_LETTER, i, session, db)
         time.sleep(DELAY_SECONDS)
 
