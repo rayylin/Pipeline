@@ -263,6 +263,7 @@ def process_one_from_queue():
     """
     Claims one pending URL from Company_Url_Dic, runs fetch_Page_Info(url),
     then marks status to 'P' (or 'E' on failure).
+    Returns True if a doc was processed, False if queue empty.
     """
     client = MongoClient(mongoUri)
     db = client["test_db"]
@@ -270,7 +271,6 @@ def process_one_from_queue():
 
     doc = claim_one_pending(db)
     if not doc:
-        print("No pending URLs in Company_Url_Dic.")
         return False
 
     _id = doc["_id"]
@@ -288,9 +288,30 @@ def process_one_from_queue():
         print(f"Error & marked E: {_id} | {e}")
         return True
 
+
+def process_all_from_queue(max_docs: int | None = None, sleep_sec: float = 0.2):
+    """
+    Drain all pending records (status == "" or missing) from Company_Url_Dic.
+    Processes sequentially, one atomic claim at a time.
+    - max_docs: cap how many to process this run (None = no cap)
+    - sleep_sec: small delay between items to be polite
+    """
+    processed = 0
+    while True:
+        did = process_one_from_queue()
+        if not did:
+            print("Queue empty. All pending records processed.")
+            break
+        processed += 1
+        if max_docs is not None and processed >= max_docs:
+            print(f"Reached max_docs={max_docs}. Stopping.")
+            break
+        time.sleep(sleep_sec)
+    print(f"Total processed this run: {processed}")
+
 # ---------- Main ----------
 def main():
-     process_one_from_queue()
+    process_all_from_queue(max_docs = None, sleep_sec = 1)
 
 if __name__ == "__main__":
     main()
