@@ -33,9 +33,5 @@ for k, v in dic.items():
             print(f"Iteration {i} failed: {e}")
             continue
 
-# for i in range(1029,8897):
-#     pass
-    # Fetch_Page_url(FETCH_LETTER, i, session, db)
-    # time.sleep(DELAY_SECONDS)
 
     
