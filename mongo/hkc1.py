@@ -20,7 +20,7 @@ USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 LETTER_BUCKETS = list(string.ascii_uppercase)   # set to ["A"] while testing
 
 # Politeness / timeouts
-DELAY_SECONDS = 1.5
+DELAY_SECONDS = 0.3
 TIMEOUT = 20
 
 # What company list to fetch right now (your ask)
@@ -274,7 +274,7 @@ def main():
 
     # ---- Task 2: fetch A/1 companies and store into Company_Url_Dic ----
     
-    for i in range(1,1000):
+    for i in range(1029,8897):
         Fetch_Page_url(FETCH_LETTER, i, session, db)
         time.sleep(DELAY_SECONDS)
 
