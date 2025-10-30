@@ -225,7 +225,8 @@ def collect_page_counts(letters: Iterable[str]) -> Dict[str, Optional[int]]:
     db = client["test_db"]
 def Fetch_Page_url(character, pageNum, session, db):
 
-    print(f"\nFetching companies for {character}/{pageNum} and writing to Company_Url_Dic...")
+    if pageNum % 50 == 0:
+        print(f"\nFetching companies for {character}/{pageNum} and writing to Company_Url_Dic...")
     pairs = fetch_companies_on_page(session, character, pageNum)
     if not pairs:
         print("No companies found or fetch not allowed.")

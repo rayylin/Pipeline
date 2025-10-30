@@ -1,6 +1,7 @@
 from pymongo import MongoClient, UpdateOne
 from config import mongoUri
 from hkc1 import Fetch_Page_url, ensure_indexes
+from hkcPage import process_all_from_queue
 import requests
 import time
 
@@ -29,7 +30,7 @@ for k, v in dic.items():
         except Exception as e:
             print(f"Iteration {i} failed: {e}")
             continue
-    
+    process_all_from_queue(max_docs = None, sleep_sec = 0.1)
 
 # for i in range(1029,8897):
 #     pass
