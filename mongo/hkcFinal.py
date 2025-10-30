@@ -27,10 +27,11 @@ for k, v in dic.items():
         try:            
             Fetch_Page_url(k, i, session, db)
             time.sleep(DELAY_SECONDS)
+            if i % 30 == 0:
+                process_all_from_queue(max_docs = None, sleep_sec = 0.1)
         except Exception as e:
             print(f"Iteration {i} failed: {e}")
             continue
-    process_all_from_queue(max_docs = None, sleep_sec = 0.1)
 
 # for i in range(1029,8897):
 #     pass
