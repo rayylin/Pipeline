@@ -15,7 +15,7 @@ from config import mongoUri
 BASE = "https://hongkong-corp.com"
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 TIMEOUT = 20
-DELAY_SECONDS = 1.0
+DELAY_SECONDS = 0.1
 
 TARGET_URL = "https://hongkong-corp.com/co/agarwood-technology-limited"
 TARGET_NAME = None
@@ -214,12 +214,12 @@ def fetch_Page_Info(targetUrl):
     db = client["test_db"]; 
     ensure_indexes(db)
 
-    print(f"Fetching Basic Information from: {targetUrl}")
+    # print(f"Fetching Basic Information from: {targetUrl}")
     info = fetch_company_basic_info(session, targetUrl)
     upsert_basic_info(db, targetUrl, TARGET_NAME, info)
 
-    print("Saved to Company_HK_Orginal:")
-    print(f"  url:  {targetUrl}")
+    # print("Saved to Company_HK_Orginal:")
+    # print(f"  url:  {targetUrl}")
     if TARGET_NAME: print(f"  name: {TARGET_NAME}")
     for k in CANON_KEYS: print(f"  {k}: {info.get(k, '')}")
     time.sleep(DELAY_SECONDS)
