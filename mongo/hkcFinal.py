@@ -5,7 +5,7 @@ from hkcPage import process_all_from_queue
 import requests
 import time
 
-dic = {"A":8897, "B":7293, "C":14083, "D":4995, "E":6163, "F":7337, "G":10526,"H":26632}
+dic = {"A":8897, "B":7293, "C":14083, "D":4995, "E":6163, "F":7337, "G":10526,"H":26632, "I":3693, "J": 4975, "K":5975, "L":6570}
 
 
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
