@@ -8,7 +8,7 @@ import requests
 import time
 import os
 
-dic = {"B":7293, "C":14083, "D":4995, "E":6163, "F":7337, "G":10526,"H":26632, "I":3693, "J":4975, "K":5975, "L":6570}
+dic = {"M":8515, "N":4152, "O":2823, "P":67877, "Q":1087, "R":4957,"S":16566, "T":8400, "U":2565, "V":2291, "W":7585, "X":1620, "Y":4312, "Z":2228, "0":1086}
 
 USER_AGENT = "learning-scraper/0.1 (+your-email@example.com)"
 DELAY_SECONDS = 0.1                 # per-thread delay between requests
