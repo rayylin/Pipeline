@@ -19,7 +19,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from config import mongoUri
 
 BASE = "https://hongkong-corp.com"
-USER_AGENT = "learning-scraper/0.1 (+s-email@example.com)"
+USER_AGENT = "learning-scraper/0.1 (+sai-email@example.com)"
 TIMEOUT = 20
 DELAY_SECONDS = 0.1  # polite pacing; shared across threads
 TARGET_URL = "https://hongkong-corp.com/co/agarwood-technology-limited"
