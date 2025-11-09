@@ -268,6 +268,9 @@ def main():
     uri = mongoUri
     client = MongoClient(uri)
     db = client["test_db"]
+
+    
+    db2 = client["test_db_2"]
     ensure_indexes(db)
 
     # ---- Task 1: collect and store total pages per letter ----
