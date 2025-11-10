@@ -238,7 +238,7 @@ def upsert_basic_info(db, url: str, name: Optional[str], info: dict):
 
 def fetch_Page_Info_with_session(targetUrl: str, session: requests.Session):
     if not targetUrl:
-        raise SystemExit("Please set TARGET_URL to a company detail URL.")
+        raise SystemExit("Please set TARGET_URL to a company detail URL")
     client = MongoClient(mongoUri)
     db = client[DB_NAME]
     ensure_indexes(db)
