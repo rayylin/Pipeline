@@ -20,7 +20,7 @@ from config import mongoUri
 
 BASE = "https://hongkong-corp.com"
 USER_AGENT = "learning-scraper/0.1 (sail@example.com)"
-TIMEOUT = 20
+TIMEOUT = 22
 DELAY_SECONDS = 0.1  # polite pacing; shared across threads
 TARGET_URL = "https://hongkong-corp.com/co/agarwood-technology-limited"
 TARGET_NAME = None
