@@ -4,7 +4,7 @@ import re
 import requests  # you already use this
 
 # ---- Mongo connection (you already have this) ----
-mongoUri = "YOUR_MONGO_URI_HERE"
+mongoUri = "YOUR_MONGO_URIdd_HERE"
 client = MongoClient(mongoUri)
 db = client["test_db"]
 collection = db["Company_HK_Orginal"]
