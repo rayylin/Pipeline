@@ -18,11 +18,13 @@ def parse_choice(user_input: str) -> Choice:
         raise ValueError("Invalid choice. Must be HK or TW")
 
 
-source = "HK"
-choice = parse_choice(source)
+
 
 client = MongoClient(mongoUri)
 db = client["company_db"]
+
+source = "TW"
+choice = parse_choice(source)
 collection = db[choice.value[0]]  # collection name
 
 def search_business(keyword: str, limit: int = 5):
@@ -39,10 +41,19 @@ def search_business(keyword: str, limit: int = 5):
     return list(collection.find(query).limit(limit))
 
 
-# Search by English keyword
-for doc in search_business("Ae"):
-    print(doc.get("Business Name"), "|", doc.get("Business Name(Chinese)"), "|", doc.get("brNo"))
+def print_business_docs(docs, fields):
+    for doc in docs:
+        values = [str(doc.get(field, "")) for field in fields]
+        print(" | ".join(values))
 
-# Search by Chinese keyword
-for doc in search_business("光"):
-    print(doc.get("Business Name"), "|", doc.get("Business Name(Chinese)"), "|", doc.get("brNo"))
+# Search by English keyword
+results = search_business("發")
+print_business_docs(results, choice.value[1])
+
+
+source = "HK"
+choice = parse_choice(source)
+collection = db[choice.value[0]]  # collection name
+
+results = search_business("發")
+print_business_docs(results, choice.value[1])
