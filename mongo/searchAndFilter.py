@@ -19,32 +19,30 @@ def parse_choice(user_input: str) -> Choice:
 
 
 source = "HK"
-collectionName = parse_choice(source)
-
+choice = parse_choice(source)
 
 client = MongoClient(mongoUri)
 db = client["company_db"]
-collection = db[collectionName.value[0]]
+collection = db[choice.value[0]]  # collection name
 
 def search_business(keyword: str, limit: int = 5):
-    # Escape keyword so special regex chars (., *, ?, etc.) don't break the search
     pattern = re.escape(keyword)
 
+    fields = choice.value[1]  # <-- HK/TW search fields list
     query = {
         "$or": [
-            {"Business Name": {"$regex": pattern, "$options": "i"}},         
-            {"Business Name(Chinese)": {"$regex": pattern, "$options": "i"}} 
+            {field: {"$regex": pattern, "$options": "i"}}
+            for field in fields
         ]
     }
 
-    results = list(collection.find(query).limit(limit))
-    return results
+    return list(collection.find(query).limit(limit))
 
 
 # Search by English keyword
 for doc in search_business("Ae"):
-    print(doc.get("Business Name"), "|", doc.get("Business Name(Chinese)"))
+    print(doc.get("Business Name"), "|", doc.get("Business Name(Chinese)"), "|", doc.get("brNo"))
 
 # Search by Chinese keyword
 for doc in search_business("光"):
-    print(doc.get("Business Name"), "|", doc.get("Business Name(Chinese)"))
+    print(doc.get("Business Name"), "|", doc.get("Business Name(Chinese)"), "|", doc.get("brNo"))
