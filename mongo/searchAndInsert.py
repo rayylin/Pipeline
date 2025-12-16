@@ -5,9 +5,8 @@ import requests
 from config import mongoUri
 
 
-mongoUri = "YOUR_MONGO_njURhIdd_HERE"
 client = MongoClient(mongoUri)
-db = client["test_db"]
+db = client["company_db"]
 collection = db["Company_HK_Orginal"]
 
 # ---- Existing official API function (your code, slightly reformatted) ----
@@ -33,7 +32,7 @@ def getHkCmpInfo(cmp_name: str) -> dict[str, str] | None:
         print(f"Official API error: {response.status_code}")
         return None
 
-# ---- Helper: slugify name for URL, similar to your example URL ----
+# ---- Helper: slugify name for URL, 
 def slugify(name: str) -> str:
     # lower case
     slug = name.lower()
@@ -44,10 +43,7 @@ def slugify(name: str) -> str:
     return slug
 
 # ---- Main function: check DB, else call API and insert ----
-def ensure_company_in_db(
-    cmp_name_en: str,
-    cmp_name_zh: str | None = None
-) -> bool:
+def ensure_company_in_db(cmp_name_en: str, cmp_name_zh: str | None = None) -> bool:
     """
     Check if company exists in MongoDB.
     If yes, return True.
@@ -122,6 +118,9 @@ def ensure_company_in_db(
 if __name__ == "__main__":
     # If company already exists in DB → True, no new insert
     # Else, it tries official API and inserts if found.
+
+    source = "HK"
+
     exists = ensure_company_in_db(
         cmp_name_en="HSBC Digital Technology Holding Group Co., Limited",
         cmp_name_zh="匯豐數字科技控股集團有限公司"
