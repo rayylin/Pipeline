@@ -1,9 +1,10 @@
 from pymongo import MongoClient
 from datetime import datetime
 import re
-import requests  # you already use this
+import requests  
+from config import mongoUri
 
-# ---- Mongo connection (you already have this) ----
+
 mongoUri = "YOUR_MONGO_njURhIdd_HERE"
 client = MongoClient(mongoUri)
 db = client["test_db"]
