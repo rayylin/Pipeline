@@ -1,3 +1,5 @@
+import os
+
 def draw_entity(entity_id, name, attributes, x, y, width=200, row_height=28):
     cells = []
 
@@ -119,9 +121,14 @@ def generate_drawio(filename):
 </mxfile>
 """
 
-    with open(filename, "w", encoding="utf-8") as f:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_path = os.path.join(script_dir, filename)
+
+    with open(output_path, "w", encoding="utf-8") as f:
         f.write(xml)
 
+    print("draw.io file generated at:")
+    print(output_path)
 
 if __name__ == "__main__":
     generate_drawio("library_er.drawio")
