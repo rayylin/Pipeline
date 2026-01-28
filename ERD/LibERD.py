@@ -1,35 +1,76 @@
 import os
 
+
 def draw_entity(entity_id, name, attributes, x, y, width=200, row_height=28):
     cells = []
 
-    header_style = (
-        "rounded=0;whiteSpace=wrap;html=1;"
-        "fillColor=#ffffff;strokeColor=#000000;"
-        "fontStyle=1;align=center;"
+    total_height = row_height * (len(attributes) + 1)
+
+    # Container (entity box)
+    container_style = (
+        "rounded=0;"
+        "whiteSpace=wrap;"
+        "html=1;"
+        "fillColor=none;"
+        "strokeColor=#000000;"
     )
 
-    attr_style = (
-        "rounded=0;whiteSpace=wrap;html=1;"
-        "fillColor=#ffffff;strokeColor=#000000;"
-        "align=left;spacingLeft=10;"
-    )
+    cells.append(f"""
+    <mxCell id="{entity_id}_container"
+        style="{container_style}"
+        vertex="1"
+        connectable="0"
+        parent="0">
+        <mxGeometry x="{x}" y="{y}"
+            width="{width}" height="{total_height}"
+            as="geometry"/>
+    </mxCell>
+    """)
 
     # Header
+    header_style = (
+        "rounded=0;"
+        "whiteSpace=wrap;"
+        "html=1;"
+        "fillColor=#ffffff;"
+        "strokeColor=#000000;"
+        "fontStyle=1;"
+        "align=center;"
+    )
+
     cells.append(f"""
-    <mxCell id="{entity_id}" value="{name}" style="{header_style}"
-        vertex="1" parent="0">
-        <mxGeometry x="{x}" y="{y}" width="{width}" height="{row_height}" as="geometry"/>
+    <mxCell id="{entity_id}_header"
+        value="{name}"
+        style="{header_style}"
+        vertex="1"
+        parent="{entity_id}_container">
+        <mxGeometry x="0" y="0"
+            width="{width}" height="{row_height}"
+            as="geometry"/>
     </mxCell>
     """)
 
     # Attributes
+    attr_style = (
+        "rounded=0;"
+        "whiteSpace=wrap;"
+        "html=1;"
+        "fillColor=#ffffff;"
+        "strokeColor=#000000;"
+        "align=left;"
+        "spacingLeft=10;"
+    )
+
     for i, attr in enumerate(attributes):
         cells.append(f"""
-        <mxCell id="{entity_id}_{i}" value="{attr}" style="{attr_style}"
-            vertex="1" parent="0">
-            <mxGeometry x="{x}" y="{y + row_height * (i + 1)}"
-                width="{width}" height="{row_height}" as="geometry"/>
+        <mxCell id="{entity_id}_attr_{i}"
+            value="{attr}"
+            style="{attr_style}"
+            vertex="1"
+            parent="{entity_id}_container">
+            <mxGeometry x="0" y="{row_height * (i + 1)}"
+                width="{width}" height="{row_height}"
+                as="geometry"/>
         </mxCell>
         """)
 
@@ -39,79 +80,127 @@ def draw_entity(entity_id, name, attributes, x, y, width=200, row_height=28):
 def generate_drawio(filename):
     entities = []
 
+    # DEPARTMENTS
     entities.append(draw_entity(
-        "Book", "Book",
-        ["book_id (PK)", "title", "genre", "publication_year"],
+        "Departments", "DEPARTMENTS",
+        [
+            "department_id (PK)",
+            "department_name",
+            "office_location"
+        ],
         50, 50
     ))
 
+    # PROGRAMS
     entities.append(draw_entity(
-        "BookCopy", "BookCopy",
-        ["copy_id (PK)", "book_id (FK)", "purchase_date", "status"],
-        300, 50
-    ))
-
-    entities.append(draw_entity(
-        "Author", "Author",
-        ["author_id (PK)", "name", "created_time"],
-        50, 250
-    ))
-
-    entities.append(draw_entity(
-        "BookAuthor", "BookAuthor",
-        ["book_id (FK)", "author_id (FK)"],
-        300, 250
-    ))
-
-    entities.append(draw_entity(
-        "Patron", "Patron",
+        "Programs", "PROGRAMS",
         [
-            "patron_id (PK)",
-            "ssn (UNIQUE, NOT NULL)",
-            "name",
+            "program_id (PK)",
+            "program_name",
+            "department_id (FK)",
+            "degree_level"
+        ],
+        320, 50
+    ))
+
+    # STUDENTS
+    entities.append(draw_entity(
+        "Students", "STUDENTS",
+        [
+            "student_id (PK)",
+            "first_name",
+            "last_name",
+            "gender",
+            "date_of_birth",
+            "email",
             "phone",
-            "address",
-            "status",
-            "violation_count",
-            "outstanding_balance",
-            "join_date",
-            "termination_date"
+            "program_id (FK)"
         ],
         600, 50
     ))
 
+    # COURSES
     entities.append(draw_entity(
-        "Employee", "Employee",
+        "Courses", "COURSES",
         [
-            "employee_id (PK)",
-            "name",
-            "phone",
-            "address",
-            "status",
-            "join_date",
-            "termination_date"
+            "course_id (PK)",
+            "course_title",
+            "credits",
+            "department_id (FK)"
+        ],
+        50, 300
+    ))
+
+    # INSTRUCTORS
+    entities.append(draw_entity(
+        "Instructors", "INSTRUCTORS",
+        [
+            "instructor_id (PK)",
+            "first_name",
+            "last_name",
+            "email",
+            "department_id (FK)"
+        ],
+        320, 300
+    ))
+
+    # CLASSROOMS
+    entities.append(draw_entity(
+        "Classrooms", "CLASSROOMS",
+        [
+            "classroom_id (PK)",
+            "building",
+            "room_number",
+            "capacity"
         ],
         600, 300
     ))
 
+    # SEMESTERS
     entities.append(draw_entity(
-        "BorrowTransaction", "BorrowTransaction",
+        "Semesters", "SEMESTERS",
         [
-            "transaction_id (PK)",
-            "copy_id (FK)",
-            "patron_id (FK)",
-            "employee_id (FK)",
-            "borrow_date",
-            "return_date",
-            "status"
+            "semester_id (PK)",
+            "term",
+            "year",
+            "start_date",
+            "end_date"
         ],
-        900, 150
+        50, 560
+    ))
+
+    # COURSE_OFFERINGS
+    entities.append(draw_entity(
+        "CourseOfferings", "COURSE_OFFERINGS",
+        [
+            "offering_id (PK)",
+            "course_id (FK)",
+            "instructor_id (FK)",
+            "semester_id (FK)",
+            "classroom_id (FK)",
+            "section_code",
+            "meeting_days",
+            "meeting_time"
+        ],
+        320, 560
+    ))
+
+    # ENROLLMENTS
+    entities.append(draw_entity(
+        "Enrollments", "ENROLLMENTS",
+        [
+            "enrollment_id (PK)",
+            "student_id (FK)",
+            "offering_id (FK)",
+            "enrollment_date"
+        ],
+        650, 560
     ))
 
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
-  <diagram name="Library ER Diagram">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10">
+  <diagram name="School ER Diagram">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10">
       <root>
         <mxCell id="0"/>
         {''.join(entities)}
@@ -130,5 +219,6 @@ def generate_drawio(filename):
     print("draw.io file generated at:")
     print(output_path)
 
+
 if __name__ == "__main__":
-    generate_drawio("library_er.drawio")
+    generate_drawio("school_er.drawio")

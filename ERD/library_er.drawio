@@ -1,139 +1,206 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.3">
   <diagram name="Library ER Diagram" id="0">
-    <mxGraphModel dx="1042" dy="658" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1158" dy="731" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
-        <mxCell id="Book" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Book" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="50" as="geometry" />
+        <mxCell id="Book_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;" vertex="1">
+          <mxGeometry height="474" width="950" x="90" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="Book_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="book_id (PK)" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="78" as="geometry" />
+        <mxCell id="Book_header" parent="Book_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Book" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
         </mxCell>
-        <mxCell id="Book_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="title" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="106" as="geometry" />
+        <mxCell id="Book_attr_0" parent="Book_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="book_id (PK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
         </mxCell>
-        <mxCell id="Book_2" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="genre" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="134" as="geometry" />
+        <mxCell id="Book_attr_1" parent="Book_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="title" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
         </mxCell>
-        <mxCell id="Book_3" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="publication_year" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="162" as="geometry" />
+        <mxCell id="Book_attr_2" parent="Book_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="genre" vertex="1">
+          <mxGeometry height="28" width="200" y="84" as="geometry" />
         </mxCell>
-        <mxCell id="BookCopy" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="BookCopy" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="50" as="geometry" />
+        <mxCell id="Book_attr_3" parent="Book_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="publication_year" vertex="1">
+          <mxGeometry height="28" width="200" y="112" as="geometry" />
         </mxCell>
-        <mxCell id="BookCopy_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="copy_id (PK)" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="78" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-0" edge="1" parent="Book_container" source="Book_attr_0" style="fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" target="BookCopy_attr_1" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="180" y="290" as="sourcePoint" />
+            <mxPoint x="280" y="190" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="BookCopy_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="book_id (FK)" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="106" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-2" edge="1" parent="Book_container" source="Author_attr_0" style="fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="BookAuthor_attr_1" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="180" y="290" as="sourcePoint" />
+            <mxPoint x="280" y="190" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="BookCopy_2" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="purchase_date" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="134" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-3" edge="1" parent="Book_container" source="Book_attr_0" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="BookAuthor_attr_0" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <Array as="points">
+              <mxPoint y="49" />
+              <mxPoint x="-50" y="49" />
+              <mxPoint x="-50" y="240" />
+              <mxPoint y="240" />
+              <mxPoint y="242" />
+            </Array>
+            <mxPoint x="390" y="290" as="sourcePoint" />
+            <mxPoint x="490" y="190" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="BookCopy_3" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="162" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-4" edge="1" parent="Book_container" style="fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="BorrowTransaction_attr_1" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="450" y="40" as="sourcePoint" />
+            <mxPoint x="470" y="130" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="Author" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Author" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="250" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-5" edge="1" parent="Book_container" source="Patron_attr_0" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" target="BorrowTransaction_attr_2" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="370" y="230" as="sourcePoint" />
+            <mxPoint x="470" y="130" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="Author_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="author_id (PK)" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="278" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-6" edge="1" parent="Book_container" source="Employee_attr_0" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="BorrowTransaction_attr_3" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="370" y="230" as="sourcePoint" />
+            <mxPoint x="470" y="130" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="Author_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="name" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="306" as="geometry" />
+        <mxCell id="5qgjDAJsYgpOKhJrVDBU-11" parent="Book_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="Due_Date" vertex="1">
+          <mxGeometry height="28" width="200" x="500" y="250" as="geometry" />
         </mxCell>
-        <mxCell id="Author_2" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="created_time" vertex="1">
-          <mxGeometry height="28" width="200" x="50" y="334" as="geometry" />
+        <mxCell id="BookCopy_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="140" width="200" x="340" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="BookAuthor" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="BookAuthor" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="250" as="geometry" />
+        <mxCell id="BookCopy_header" parent="BookCopy_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="BookCopy" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
         </mxCell>
-        <mxCell id="BookAuthor_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="book_id (FK)" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="278" as="geometry" />
+        <mxCell id="BookCopy_attr_0" parent="BookCopy_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="copy_id (PK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
         </mxCell>
-        <mxCell id="BookAuthor_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="author_id (FK)" vertex="1">
-          <mxGeometry height="28" width="200" x="300" y="306" as="geometry" />
+        <mxCell id="BookCopy_attr_1" parent="BookCopy_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="book_id (FK)" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
         </mxCell>
-        <mxCell id="Patron" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Patron" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="50" as="geometry" />
+        <mxCell id="BookCopy_attr_2" parent="BookCopy_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="purchase_date" vertex="1">
+          <mxGeometry height="28" width="200" y="84" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="patron_id (PK)" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="78" as="geometry" />
+        <mxCell id="BookCopy_attr_3" parent="BookCopy_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
+          <mxGeometry height="28" width="200" y="112" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="ssn (UNIQUE, NOT NULL)" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="106" as="geometry" />
+        <mxCell id="Author_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="112" width="200" x="340" y="329" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_2" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="name" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="134" as="geometry" />
+        <mxCell id="Author_header" parent="Author_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Author" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_3" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="phone" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="162" as="geometry" />
+        <mxCell id="Author_attr_0" parent="Author_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="author_id (PK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_4" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="address" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="190" as="geometry" />
+        <mxCell id="Author_attr_1" parent="Author_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="name" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_5" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="218" as="geometry" />
+        <mxCell id="Author_attr_2" parent="Author_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="created_time" vertex="1">
+          <mxGeometry height="28" width="200" y="84" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_6" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="violation_count" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="246" as="geometry" />
+        <mxCell id="BookAuthor_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="84" width="200" x="110" y="300" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_7" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="outstanding_balance" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="274" as="geometry" />
+        <mxCell id="BookAuthor_header" parent="BookAuthor_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="BookAuthor" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_8" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="join_date" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="302" as="geometry" />
+        <mxCell id="BookAuthor_attr_0" parent="BookAuthor_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="book_id (PK, FK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
         </mxCell>
-        <mxCell id="Patron_9" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="termination_date" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="330" as="geometry" />
+        <mxCell id="BookAuthor_attr_1" parent="BookAuthor_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="author_id (PK, FK)" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
         </mxCell>
-        <mxCell id="Employee" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Employee" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="300" as="geometry" />
+        <mxCell id="Patron_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="308" width="200" x="840" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="employee_id (PK)" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="328" as="geometry" />
+        <mxCell id="Patron_header" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Patron" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="name" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="356" as="geometry" />
+        <mxCell id="Patron_attr_0" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="patron_id (PK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_2" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="phone" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="384" as="geometry" />
+        <mxCell id="Patron_attr_1" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="ssn (UNIQUE, NOT NULL)" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_3" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="address" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="412" as="geometry" />
+        <mxCell id="Patron_attr_2" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="name" vertex="1">
+          <mxGeometry height="28" width="200" y="84" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_4" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="440" as="geometry" />
+        <mxCell id="Patron_attr_3" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="phone" vertex="1">
+          <mxGeometry height="28" width="200" y="112" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_5" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="join_date" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="468" as="geometry" />
+        <mxCell id="Patron_attr_4" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="address" vertex="1">
+          <mxGeometry height="28" width="200" y="140" as="geometry" />
         </mxCell>
-        <mxCell id="Employee_6" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="termination_date" vertex="1">
-          <mxGeometry height="28" width="200" x="600" y="496" as="geometry" />
+        <mxCell id="Patron_attr_5" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
+          <mxGeometry height="28" width="200" y="168" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="BorrowTransaction" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="150" as="geometry" />
+        <mxCell id="Patron_attr_6" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="violation_count" vertex="1">
+          <mxGeometry height="28" width="200" y="196" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="transaction_id (PK)" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="178" as="geometry" />
+        <mxCell id="Patron_attr_7" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="outstanding_balance" vertex="1">
+          <mxGeometry height="28" width="200" y="224" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_1" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="copy_id (FK)" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="206" as="geometry" />
+        <mxCell id="Patron_attr_8" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="join_date" vertex="1">
+          <mxGeometry height="28" width="200" y="252" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_2" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="patron_id (FK)" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="234" as="geometry" />
+        <mxCell id="Patron_attr_9" parent="Patron_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="termination_date" vertex="1">
+          <mxGeometry height="28" width="200" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_3" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="employee_id (FK)" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="262" as="geometry" />
+        <mxCell id="Employee_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="224" width="200" x="840" y="350" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_4" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="borrow_date" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="290" as="geometry" />
+        <mxCell id="Employee_header" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="Employee" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_5" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="return_date" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="318" as="geometry" />
+        <mxCell id="Employee_attr_0" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="employee_id (PK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
         </mxCell>
-        <mxCell id="BorrowTransaction_6" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
-          <mxGeometry height="28" width="200" x="900" y="346" as="geometry" />
+        <mxCell id="Employee_attr_1" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="name" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="Employee_attr_2" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="phone" vertex="1">
+          <mxGeometry height="28" width="200" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="Employee_attr_3" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="address" vertex="1">
+          <mxGeometry height="28" width="200" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="Employee_attr_4" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
+          <mxGeometry height="28" width="200" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="Employee_attr_5" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="join_date" vertex="1">
+          <mxGeometry height="28" width="200" y="168" as="geometry" />
+        </mxCell>
+        <mxCell id="Employee_attr_6" parent="Employee_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="termination_date" vertex="1">
+          <mxGeometry height="28" width="200" y="196" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_container" connectable="0" parent="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="224" width="200" x="590" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_header" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;align=center;" value="BorrowTransaction" vertex="1">
+          <mxGeometry height="28" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_0" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="transaction_id (PK)" vertex="1">
+          <mxGeometry height="28" width="200" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_1" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="copy_id (FK)" vertex="1">
+          <mxGeometry height="28" width="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_2" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="patron_id (FK)" vertex="1">
+          <mxGeometry height="28" width="200" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_3" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="employee_id (FK)" vertex="1">
+          <mxGeometry height="28" width="200" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_4" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="borrow_date" vertex="1">
+          <mxGeometry height="28" width="200" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_5" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="return_date" vertex="1">
+          <mxGeometry height="28" width="200" y="168" as="geometry" />
+        </mxCell>
+        <mxCell id="BorrowTransaction_attr_6" parent="BorrowTransaction_container" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;align=left;spacingLeft=10;" value="status" vertex="1">
+          <mxGeometry height="28" width="200" y="196" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
